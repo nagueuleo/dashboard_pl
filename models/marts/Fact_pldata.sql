@@ -33,6 +33,5 @@ with stats_data as (
         team_key,
         venue_key,
         opponent_key
-       
     from {{ ref('int_pl_data') }}
 )
