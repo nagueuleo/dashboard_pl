@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: league
+    catalog: workspace
+    schema: pl_data
+    tables:
+      - name: pl_data
+        description: "table contenant les données sur les stats de la première league"

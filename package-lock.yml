@@ -1,0 +1,17 @@
+packages:
+  - name: dbt_utils
+    package: dbt-labs/dbt_utils
+    version: 1.3.3
+  - name: dbt_date
+    package: godatadriven/dbt_date
+    version: 0.18.0
+  - name: elementary
+    package: elementary-data/elementary
+    version: 0.24.0
+  - name: codegen
+    package: dbt-labs/codegen
+    version: 0.14.1
+  - name: audit_helper
+    package: dbt-labs/audit_helper
+    version: 0.14.0
+sha1_hash: 366aff25dca1f356196b61f91a2741e3cbbebe74
