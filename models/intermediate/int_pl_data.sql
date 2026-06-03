@@ -10,7 +10,7 @@ WITH data_pl AS (
        season,
        team,
        opponent,
-       split_part(game, ' ', 2) as match,
+       split_part(game, ' ', 2) as game,
        date,
        time,
        round,
