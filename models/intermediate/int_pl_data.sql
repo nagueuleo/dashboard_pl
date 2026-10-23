@@ -5,29 +5,30 @@
 }}
 
 WITH data_pl AS (
-    select 
-       league,
-       season,
-       team,
-       opponent,
-       split_part(game, ' ', 2) as game,
-       date,
-       time,
-       round,
-       day,
-       venue,
-       result,
-       GF,
-       GA,
-       xG,
-       xGA,
-       Poss,
-       attendance,
-       Captain,
-       Formation,
-       Opp_Formation,
-       Referee,
-       match_report
-    from {{ ref('stg_data') }}
+    SELECT
+        league,
+        season,
+        team,
+        opponent,
+        date,
+        time,
+        round,
+        day,
+        venue,
+        result,
+        gf,
+        ga,
+        xg,
+        xga,
+        poss,
+        attendance,
+        captain,
+        formation,
+        opp_formation,
+        referee,
+        match_report,
+        split_part(game, ' ', 2) AS game
+    FROM {{ ref('stg_data') }}
 )
-select * from data_pl
+
+SELECT * FROM data_pl

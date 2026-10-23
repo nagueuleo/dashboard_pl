@@ -4,12 +4,13 @@
     )
 }}
 
-with opponent_data as ( 
-    select distinct
-        row_number() over(order by opponent) as opponent_key,
-        opponent
+with opponent_data as (
+    select
+        opponent,
+        row_number() over (order by opponent) as opponent_key
     from {{ ref('int_pl_data') }}
     group by opponent
-    order by opponent ASC
+    order by opponent asc
 )
+
 select * from opponent_data
