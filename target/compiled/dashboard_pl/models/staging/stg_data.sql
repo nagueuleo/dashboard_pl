@@ -1,34 +1,36 @@
 
 
 WITH source_data AS (
-    SELECT * from `dev`.`bronze`.`pl_data`
+    SELECT * FROM `dev`.`bronze`.`pl_data`
 ),
- renamed AS (
-     SELECT
-       league,
-       season,
-       team,
-       game,
-       date,
-       time,
-       round,
-       day,
-       venue,
-       result,
-       GF,
-       GA,
-       xG,
-       xGA,
-       Poss,
-       coalesce(attendance, 73475) AS attendance,
-       opponent,
-       Captain,
-       Formation,
-       Opp_Formation,
-       Referee,
-       match_report,
-       notes
-     FROM source_data
-     where Formation IS NOT NULL
- )
+
+renamed AS (
+    SELECT
+        league,
+        season,
+        team,
+        game,
+        date,
+        time,
+        round,
+        day,
+        venue,
+        result,
+        gf,
+        ga,
+        xg,
+        xga,
+        poss,
+        opponent,
+        captain,
+        formation,
+        opp_formation,
+        referee,
+        match_report,
+        notes,
+        coalesce(attendance, 73475) AS attendance
+    FROM source_data
+    WHERE formation IS NOT NULL
+)
+
 SELECT * FROM renamed

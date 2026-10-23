@@ -1,6 +1,6 @@
 {{ config(materialized='table') }}
 
-with date_spine as (
+WITH date_spine AS (
 
     {{
         dbt_utils.date_spine(
@@ -12,15 +12,12 @@ with date_spine as (
 
 )
 
-select
-
-    cast(date_format(date_day, 'yyyyMMdd') as int) as date_key,
-    date_day as full_date,
-    year(date_day) as year,
-    month(date_day) as month,
-    day(date_day) as day,
-
-    date_format(date_day, 'MMM') as month_name,
-    date_format(date_day, 'E') as day_name
-
-from date_spine
+SELECT
+    CAST(DATE_FORMAT(date_day, 'yyyyMMdd') AS INT) AS date_key,
+    date_day AS full_date,
+    YEAR(date_day) AS year_number,
+    MONTH(date_day) AS month_number,
+    DAY(date_day) AS day_number,
+    DATE_FORMAT(date_day, 'MMM') AS month_name,
+    DATE_FORMAT(date_day, 'E') AS day_name
+FROM date_spine
