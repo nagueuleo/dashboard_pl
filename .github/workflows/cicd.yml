@@ -40,7 +40,7 @@ jobs:
         run: dbt deps
 
       - name: Lint dbt models
-        run: sqlfluff lint models/
+        run: "sqlfluff lint models"
 
       - name: Check connection
         run: dbt debug
@@ -49,4 +49,4 @@ jobs:
         run: dbt parse
 
       - name: Build dbt models
-        run: dbt build --full-refresh --profiles-dir .
+        run: dbt build --full-refresh --profiles-dir ./
