@@ -3,8 +3,13 @@ dialect = databricks
 templater = dbt
 max_line_length = 100
 
+[sqlfluff]
+dialect = databricks
+templater = dbt
+max_line_length = 100
+
 [sqlfluff:templater:dbt]
 project_dir = .
-profiles_dir = /home/runner/work/dashboard_pl/dashboard_pl
+profiles_dir = .
 profile = dashboard_pl
 target = dev
