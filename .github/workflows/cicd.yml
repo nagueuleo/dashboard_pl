@@ -56,3 +56,9 @@ jobs:
 
       - name: Build dbt models
         run: dbt build --full-refresh --profiles-dir ./
+
+      - name: test models
+        run: dbt test
+        
+      - name: compilation of models
+        run: dbt compile

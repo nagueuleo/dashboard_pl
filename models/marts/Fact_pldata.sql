@@ -1,5 +1,5 @@
-with stats_data as (
-    select
+WITH stats_data AS (
+    SELECT
         l.league,
         l.season,
         t.team,
@@ -28,30 +28,28 @@ with stats_data as (
         v.venue_key,
         o.opponent_key,
         d.date_key,
-        row_number() over (
-            order by l.date, l.team, l.opponent
-        ) as stats_key
-
-    from {{ ref('int_pl_data') }} as l
-
-    left join {{ ref('Dim_formation') }} as f
-        on l.formation = f.formation
-
-    left join {{ ref('Dim_refree') }} as r
-        on l.referee = r.referee
-
-    left join {{ ref('Dim_team') }} as t
-        on l.team = t.team
-
-    left join {{ ref('Dim_venue') }} as v
-        on l.venue = v.venue
-
-    left join {{ ref('Dim_opponent') }} as o
-        on l.opponent = o.opponent
-
-    left join {{ ref('Dim_date') }} as d
-        on l.date = d.full_date
+        ROW_NUMBER() over (
+            ORDER BY
+                l.date,
+                l.team,
+                l.opponent
+        ) AS stats_key
+    FROM
+        {{ ref('int_pl_data') }} AS l
+        LEFT JOIN {{ ref('Dim_formation') }} AS f
+        ON l.formation = f.formation
+        LEFT JOIN {{ ref('Dim_refree') }} AS r
+        ON l.referee = r.referee
+        LEFT JOIN {{ ref('Dim_team') }} AS t
+        ON l.team = t.team
+        LEFT JOIN {{ ref('Dim_venue') }} AS v
+        ON l.venue = v.venue
+        LEFT JOIN {{ ref('Dim_opponent') }} AS o
+        ON l.opponent = o.opponent
+        LEFT JOIN {{ ref('Dim_date') }} AS d
+        ON l.date = d.full_date
 )
-
-select *
-from stats_data
+SELECT
+    *
+FROM
+    stats_data
