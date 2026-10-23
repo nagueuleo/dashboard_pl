@@ -2,5 +2,3 @@
 dialect = databricks
 templater = dbt
 max_line_length = 100
-[sqlfluff:templater:dbt]
-profiles_dir = .
