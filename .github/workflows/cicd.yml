@@ -1,0 +1,50 @@
+
+name: dbt CI/CD
+
+on:
+    pull_request:
+        types:
+        - opened
+        - synchronize
+        - reopened
+        - ready_for_review
+    push:
+        branches:
+        - main
+
+jobs:
+    dbt_ci:
+        runs-on: ubuntu-latest
+
+
+    env:
+        DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+        DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
+        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        DATABRICKS_CATALOG: ${{ secrets.DATABRICKS_CATALOG }}
+
+    steps:
+        - name: Checkout code
+        uses: actions/checkout@v4
+
+        - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+            python-version: "3.11"
+
+        - name: Install dependencies
+        run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+
+        - name: Lint dbt models
+        run: sqlfluff lint models/
+
+        - name: Check connexion
+        run: dbt debug
+
+        - name: dbt install dependacies
+        run: dbt deps
+
+        - name: dbt build
+        run : dbt build --full-refresh --profiles-dir ./

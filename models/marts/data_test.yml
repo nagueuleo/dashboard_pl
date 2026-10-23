@@ -8,23 +8,23 @@ models:
     description: "{{ doc('data_description') }}"
     columns:
       - name: stats_key
-        description: "{{doc('stats_key_desc') }}"
+        description: "{{ doc('stats_key_desc')}}"
         data_type: int
         tests:
           - unique
           - not_null
       - name: league
-        description: "{{doc('league_desc') }}"
+        description: "{{ doc('league_desc') }}"
         data_type: string
         tests:
           - not_null
       - name: season
-        description: "{{doc('season_desc') }}"
+        description: "{{ doc('season_desc') }}"
         data_type: bigint
         tests:
           - not_null
       - name: team
-        description: "{{doc('team_desc') }}"
+        description: "{{ doc('team_desc') }}"
         data_type: string
         tests:
           - test_is_null
