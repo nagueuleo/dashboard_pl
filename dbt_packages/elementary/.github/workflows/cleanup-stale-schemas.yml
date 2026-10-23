@@ -1,0 +1,97 @@
+name: Cleanup stale CI schemas
+
+on:
+  schedule:
+    # Daily at 03:00 UTC
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+    inputs:
+      max-age-hours:
+        type: string
+        required: false
+        default: "24"
+        description: Drop schemas older than this many hours
+
+permissions: {}
+
+env:
+  TESTS_DIR: ${{ github.workspace }}/dbt-data-reliability/integration_tests
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Mint an OIDC token to assume the shared elementary-oss AWS role
+      # (used by the athena matrix entry below).
+      id-token: write
+    env:
+      WAREHOUSE: ${{ matrix.warehouse-type }}
+      MAX_AGE_HOURS: ${{ inputs.max-age-hours || '24' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        warehouse-type:
+          - snowflake
+          - bigquery
+          - redshift
+          - databricks_catalog
+          - athena
+    steps:
+      - name: Validate max-age-hours input
+        # Fail-closed on non-integer input before it reaches dbt run-operation.
+        run: |
+          if ! [[ "$MAX_AGE_HOURS" =~ ^[0-9]+$ ]]; then
+            echo "::error::Invalid max-age-hours: '$MAX_AGE_HOURS' (must be a non-negative integer)"
+            exit 1
+          fi
+
+      - name: Configure AWS credentials
+        if: matrix.warehouse-type == 'athena'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: eu-west-1
+
+      - name: Checkout dbt package
+        uses: actions/checkout@v6
+        with:
+          path: dbt-data-reliability
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      - name: Install dbt
+        env:
+          DBT_ADAPTER_PKG: ${{ (matrix.warehouse-type == 'databricks_catalog' && 'databricks') || (matrix.warehouse-type == 'athena' && 'athena-community') || matrix.warehouse-type }}
+        run: pip install "dbt-core" "dbt-${DBT_ADAPTER_PKG}"
+
+      - name: Write dbt profiles
+        env:
+          CI_WAREHOUSE_SECRETS: ${{ secrets.CI_WAREHOUSE_SECRETS || '' }}
+        run: |
+          # The cleanup job doesn't create schemas, but generate_profiles.py
+          # requires --schema-name.  Use a dummy value.
+          python "${{ github.workspace }}/dbt-data-reliability/integration_tests/profiles/generate_profiles.py" \
+            --template "${{ github.workspace }}/dbt-data-reliability/integration_tests/profiles/profiles.yml.j2" \
+            --output ~/.dbt/profiles.yml \
+            --schema-name "cleanup_placeholder"
+
+      - name: Install dbt deps
+        working-directory: ${{ env.TESTS_DIR }}/dbt_project
+        run: dbt deps
+
+      - name: Symlink local elementary package
+        run: ln -sfn "${{ github.workspace }}/dbt-data-reliability" "${{ env.TESTS_DIR }}/dbt_project/dbt_packages/elementary"
+
+      - name: Drop stale CI schemas
+        working-directory: ${{ env.TESTS_DIR }}/dbt_project
+        # Only dbt_ prefixed schemas are created in this repo's CI.
+        # The elementary repo has its own workflow for py_ prefixed schemas.
+        run: |
+          dbt run-operation drop_stale_ci_schemas \
+            --args '{prefixes: ["dbt_"], max_age_hours: '"$MAX_AGE_HOURS"'}' \
+            -t "$WAREHOUSE"

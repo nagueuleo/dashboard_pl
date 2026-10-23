@@ -1,0 +1,92 @@
+services:
+  # Nessie Catalog Server Using In-Memory Store
+  nessie:
+    image: projectnessie/nessie:latest
+    container_name: catalog
+    networks:
+      - dremio-lakehouse
+    ports:
+      - 19120:19120
+
+  # RustFS Storage Server
+  rustfs:
+    image: rustfs/rustfs:1.0.0
+    container_name: storage
+    environment:
+      - RUSTFS_ACCESS_KEY=admin
+      - RUSTFS_SECRET_KEY=password
+    networks:
+      - dremio-lakehouse
+    ports:
+      - 9001:9001
+      - 9000:9000
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9000/health || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    volumes:
+      - rustfs_data:/data
+
+  rustfs-setup:
+    image: rustfs/rc:v0.1.36
+    container_name: rustfs-setup
+    depends_on:
+      rustfs:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      set -e;
+      rc alias set local http://rustfs:9000 admin password;
+      rc bucket create --ignore-existing local/datalake;
+      rc ls local;
+      "
+    networks:
+      - dremio-lakehouse
+
+  # Dremio
+  dremio:
+    image: dremio/dremio-oss:latest
+    platform: linux/amd64
+    ports:
+      - 9047:9047
+      - 31010:31010
+      - 32010:32010
+      - 45678:45678
+    container_name: dremio
+    environment:
+      - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Dpaths.dist=file:///opt/dremio/data/dist -Ddebug.addDefaultUser=true
+      - SERVICES_COORDINATOR_ENABLED=true
+      - SERVICES_EXECUTOR_ENABLED=true
+    networks:
+      - dremio-lakehouse
+    volumes:
+      - dremio_data:/opt/dremio/data:rw
+    # Workaround for permission issues in podman
+    user: "0"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9047 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 15s
+
+  dremio-setup:
+    image: alpine:latest
+    container_name: dremio-setup
+    depends_on:
+      dremio:
+        condition: service_healthy
+    volumes:
+      - ./docker/dremio/dremio-setup.sh:/dremio-setup.sh
+    command: sh /dremio-setup.sh
+    networks:
+      - dremio-lakehouse
+
+networks:
+  dremio-lakehouse:
+
+volumes:
+  dremio_data:
+  rustfs_data:

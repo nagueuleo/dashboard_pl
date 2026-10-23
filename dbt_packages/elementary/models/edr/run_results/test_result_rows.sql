@@ -1,0 +1,36 @@
+{{
+    config(
+        materialized="incremental",
+        on_schema_change="append_new_columns",
+        indexes=elementary.get_indexes_for_model(
+            "test_result_rows",
+            [
+                {"columns": ["created_at"]},
+                {"columns": ["elementary_test_results_id"]},
+                {"columns": ["detected_at"]},
+            ],
+        ),
+        partition_by=elementary.get_partition_by(),
+        full_refresh=elementary.get_config_var("elementary_full_refresh"),
+        meta={
+            "timestamp_column": "created_at",
+            "prev_timestamp_column": "detected_at",
+        },
+        table_type=elementary.get_default_table_type(),
+        incremental_strategy=elementary.get_append_only_incremental_strategy(),
+    )
+}}
+
+-- depends_on: {{ ref('elementary_test_results') }}
+{{
+    elementary.empty_table(
+        [
+            ("elementary_test_results_id", "long_string"),
+            ("result_row", "long_string"),
+            ("detected_at", "timestamp"),
+            ("created_at", "timestamp"),
+            ("row_index", "int"),
+            ("test_type", "string"),
+        ]
+    )
+}}
