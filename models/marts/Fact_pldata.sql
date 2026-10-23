@@ -28,28 +28,24 @@ WITH stats_data AS (
         v.venue_key,
         o.opponent_key,
         d.date_key,
-        ROW_NUMBER() over (
+        ROW_NUMBER() OVER (
             ORDER BY
                 l.date,
                 l.team,
                 l.opponent
         ) AS stats_key
-    FROM
-        {{ ref('int_pl_data') }} AS l
-        LEFT JOIN {{ ref('Dim_formation') }} AS f
+    FROM {{ ref('int_pl_data') }} AS l
+    LEFT JOIN {{ ref('Dim_formation') }} AS f
         ON l.formation = f.formation
-        LEFT JOIN {{ ref('Dim_refree') }} AS r
+    LEFT JOIN {{ ref('Dim_refree') }} AS r
         ON l.referee = r.referee
-        LEFT JOIN {{ ref('Dim_team') }} AS t
+    LEFT JOIN {{ ref('Dim_team') }} AS t
         ON l.team = t.team
-        LEFT JOIN {{ ref('Dim_venue') }} AS v
+    LEFT JOIN {{ ref('Dim_venue') }} AS v
         ON l.venue = v.venue
-        LEFT JOIN {{ ref('Dim_opponent') }} AS o
+    LEFT JOIN {{ ref('Dim_opponent') }} AS o
         ON l.opponent = o.opponent
-        LEFT JOIN {{ ref('Dim_date') }} AS d
+    LEFT JOIN {{ ref('Dim_date') }} AS d
         ON l.date = d.full_date
-)
-SELECT
-    *
-FROM
-    stats_data
+) 
+SELECT * FROM stats_data
