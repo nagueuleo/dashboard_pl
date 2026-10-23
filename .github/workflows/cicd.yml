@@ -42,10 +42,6 @@ jobs:
 
       - name: Lint dbt models
         run: "sqlfluff lint models"
-        env:
-            DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-            DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
-            DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
       - name: Check connection
         run: dbt debug
