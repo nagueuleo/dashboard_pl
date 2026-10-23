@@ -42,13 +42,7 @@ jobs:
         run: dbt deps
 
       - name: Lint dbt models
-        env:
-          DBT_PROFILES_DIR: ${{ github.workspace }}
-        run: |
-         echo "Workspace: $GITHUB_WORKSPACE"
-         ls -la "$GITHUB_WORKSPACE"
-         test -f "$GITHUB_WORKSPACE/profiles.yml"
-         sqlfluff lint models --config .sqlfluff
+        run: "sqlfluff lint models"
 
       - name: Check connection
         run: dbt debug
