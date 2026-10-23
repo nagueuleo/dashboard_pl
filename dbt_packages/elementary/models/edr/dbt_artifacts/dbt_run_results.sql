@@ -1,0 +1,26 @@
+{{
+    config(
+        materialized="incremental",
+        transient=False,
+        on_schema_change="append_new_columns",
+        indexes=elementary.get_indexes_for_model(
+            "dbt_run_results",
+            [
+                {"columns": ["unique_id"]},
+                {"columns": ["unique_id", "created_at"]},
+                {"columns": ["model_execution_id"]},
+            ],
+        ),
+        partition_by=elementary.get_partition_by(),
+        full_refresh=elementary.get_config_var("elementary_full_refresh"),
+        meta={
+            "dedup_by_column": "model_execution_id",
+            "timestamp_column": "created_at",
+            "prev_timestamp_column": "generated_at",
+        },
+        table_type=elementary.get_default_table_type(),
+        incremental_strategy=elementary.get_append_only_incremental_strategy(),
+    )
+}}
+
+{{ elementary.get_dbt_run_results_empty_table_query() }}

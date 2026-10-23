@@ -1,0 +1,53 @@
+{% macro get_default_incremental_strategy() %}
+    {% do return(
+        adapter.dispatch("get_default_incremental_strategy", "elementary")()
+    ) %}
+{% endmacro %}
+
+{%- macro athena__get_default_incremental_strategy() %}
+    {% do return("merge") %}
+{% endmacro %}
+
+{%- macro trino__get_default_incremental_strategy() %}
+    {% do return("merge") %}
+{% endmacro %}
+
+{%- macro redshift__get_default_incremental_strategy() %}
+    {% do return("merge") %}
+{% endmacro %}
+
+{%- macro spark__get_default_incremental_strategy() %}
+    {% do return("merge") %}
+{% endmacro %}
+
+{%- macro fabric__get_default_incremental_strategy() %}
+    {% do return("merge") %}
+{% endmacro %}
+
+{%- macro sqlserver__get_default_incremental_strategy() %}
+    {% do return(elementary.fabric__get_default_incremental_strategy()) %}
+{% endmacro %}
+
+{%- macro fabricspark__get_default_incremental_strategy() %}
+    {{ return(elementary.spark__get_default_incremental_strategy()) }}
+{% endmacro %}
+
+{% macro default__get_default_incremental_strategy() %}
+    {% do return(none) %}
+{% endmacro %}
+
+{% macro get_append_only_incremental_strategy() %}
+    {% do return(
+        adapter.dispatch(
+            "get_append_only_incremental_strategy", "elementary"
+        )()
+    ) %}
+{% endmacro %}
+
+{%- macro bigquery__get_append_only_incremental_strategy() %}
+    {% do return("merge") %}
+{% endmacro %}
+
+{% macro default__get_append_only_incremental_strategy() %}
+    {% do return("append") %}
+{% endmacro %}

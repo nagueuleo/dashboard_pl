@@ -1,0 +1,118 @@
+{
+    "path_count": 632,
+    "parsed_path_count": 632,
+    "static_analysis_path_count": 39,
+    "static_analysis_parsed_path_count": 11,
+    "is_partial_parse_enabled": true,
+    "is_static_analysis_enabled": true,
+    "read_files_elapsed": 0.8930351999879349,
+    "load_macros_elapsed": 8.589555899990955,
+    "parse_project_elapsed": 2.6414788000111002,
+    "patch_sources_elapsed": 0.009297500015236437,
+    "process_manifest_elapsed": 0.16285120000247844,
+    "load_all_elapsed": 13.006208300008439,
+    "projects": [
+        {
+            "project_name": "dashboard_pl",
+            "elapsed": 1.2946401000081096,
+            "parsers": [
+                {
+                    "parser": "model",
+                    "elapsed": 0.4397473999997601,
+                    "parsed_path_count": 9
+                },
+                {
+                    "parser": "test",
+                    "elapsed": 0.1372718999919016,
+                    "parsed_path_count": 1
+                },
+                {
+                    "parser": "seed",
+                    "elapsed": 0.24759450001874939,
+                    "parsed_path_count": 1
+                },
+                {
+                    "parser": "doc",
+                    "elapsed": 0.0002395999908912927,
+                    "parsed_path_count": 1
+                },
+                {
+                    "parser": "test",
+                    "elapsed": 0.4577010000066366,
+                    "parsed_path_count": 2
+                }
+            ],
+            "parsed_path_count": 14
+        },
+        {
+            "project_name": "dbt_databricks",
+            "elapsed": 0.012780599994584918,
+            "parsers": [],
+            "parsed_path_count": 0
+        },
+        {
+            "project_name": "dbt_spark",
+            "elapsed": 0.010487599996849895,
+            "parsers": [],
+            "parsed_path_count": 0
+        },
+        {
+            "project_name": "dbt",
+            "elapsed": 0.013488800002960488,
+            "parsers": [
+                {
+                    "parser": "doc",
+                    "elapsed": 0.0002717000024858862,
+                    "parsed_path_count": 1
+                }
+            ],
+            "parsed_path_count": 1
+        },
+        {
+            "project_name": "audit_helper",
+            "elapsed": 0.01397450000513345,
+            "parsers": [],
+            "parsed_path_count": 0
+        },
+        {
+            "project_name": "codegen",
+            "elapsed": 0.012443500017980114,
+            "parsers": [],
+            "parsed_path_count": 0
+        },
+        {
+            "project_name": "dbt_date",
+            "elapsed": 0.010805800033267587,
+            "parsers": [],
+            "parsed_path_count": 0
+        },
+        {
+            "project_name": "dbt_utils",
+            "elapsed": 0.011550100025488064,
+            "parsers": [],
+            "parsed_path_count": 0
+        },
+        {
+            "project_name": "elementary",
+            "elapsed": 1.260710399976233,
+            "parsers": [
+                {
+                    "parser": "model",
+                    "elapsed": 0.91103370001656,
+                    "parsed_path_count": 30
+                },
+                {
+                    "parser": "doc",
+                    "elapsed": 0.0003992999845650047,
+                    "parsed_path_count": 1
+                },
+                {
+                    "parser": "test",
+                    "elapsed": 0.15976569999475032,
+                    "parsed_path_count": 4
+                }
+            ],
+            "parsed_path_count": 35
+        }
+    ]
+}

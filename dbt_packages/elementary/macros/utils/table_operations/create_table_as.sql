@@ -1,0 +1,161 @@
+{% macro edr_create_table_as(
+    temporary,
+    relation,
+    sql_query,
+    drop_first=false,
+    should_commit=false,
+    expiration_hours=none
+) %}
+    {# This macro contains a simplified implementation that replaces our usage of 
+     dbt.create_table_as and serves our needs.
+     This version also runs the query rather than return the SQL.
+  #}
+    {% if drop_first %} {% do dbt.drop_relation_if_exists(relation) %} {% endif %}
+
+    {% set create_query = elementary.edr_get_create_table_as_sql(
+        temporary, relation, sql_query, expiration_hours=expiration_hours
+    ) %}
+    {% do elementary.run_query(create_query) %}
+
+    {% if should_commit %} {% do elementary.edr_commit() %} {% endif %}
+{% endmacro %}
+
+
+{% macro edr_get_create_table_as_sql(
+    temporary, relation, sql_query, expiration_hours=none
+) %}
+    {{
+        return(
+            adapter.dispatch("edr_get_create_table_as_sql", "elementary")(
+                temporary, relation, sql_query, expiration_hours=expiration_hours
+            )
+        )
+    }}
+{% endmacro %}
+
+{% macro default__edr_get_create_table_as_sql(
+    temporary, relation, sql_query, expiration_hours=none
+) %}
+    {{ dbt.get_create_table_as_sql(temporary, relation, sql_query) }}
+{% endmacro %}
+
+{# Simplified versions for dbt-fusion supported adapters as the original dbt macro 
+   no longer works outside of the scope of a model's materialization #}
+{% macro snowflake__edr_get_create_table_as_sql(
+    temporary, relation, sql_query, expiration_hours=none
+) %}
+  create or replace {% if temporary %} temporary {% endif %} table {{ relation }}
+  as {{ sql_query }}
+{% endmacro %}
+
+{% macro bigquery__edr_get_create_table_as_sql(
+    temporary, relation, sql_query, expiration_hours=none
+) %}
+    {# BigQuery has no session-scoped temp tables, so a "temporary" relation is a real
+       table that only an expiration cleans up. The expiration must outlive the longest
+       dbt invocation, hence the configurable default. #}
+    {% if expiration_hours is none and temporary %}
+        {% set expiration_hours = elementary.get_config_var(
+            "temp_table_expiration_hours"
+        ) %}
+    {% endif %}
+  create or replace table {{ relation }}
+    {% if expiration_hours is not none %}
+  options (expiration_timestamp=TIMESTAMP_ADD(CURRENT_TIMESTAMP(), INTERVAL {{ expiration_hours }} hour))
+    {% endif %}
+  as {{ sql_query }}
+{% endmacro %}
+
+{% macro postgres__edr_get_create_table_as_sql(
+    temporary, relation, sql_query, expiration_hours=none
+) %}
+  create {% if temporary %} temporary {% endif %} table {{ relation.include(database=(not temporary), schema=(not temporary)) }}
+  as {{ sql_query }}
+{% endmacro %}
+
+{% macro redshift__edr_get_create_table_as_sql(
+    temporary, relation, sql_query, expiration_hours=none
+) %}
+    {% if temporary and elementary.is_dbt_fusion() %}
+        {# dbt-fusion uses connection pooling - temp tables created in one session
+       aren't visible in other sessions. Create regular tables instead.
+       These are cleaned up by Elementary's normal cleanup logic. #}
+    create table {{ relation }}
+    as {{ sql_query }}
+    {% else %}
+    create {% if temporary %} temporary {% endif %} table {{ relation.include(database=(not temporary), schema=(not temporary)) }}
+    as {{ sql_query }}
+    {% endif %}
+{% endmacro %}
+
+{% macro databricks__edr_get_create_table_as_sql(
+    temporary, relation, sql_query, expiration_hours=none
+) %}
+    {% if temporary %}
+        {% if elementary.is_dbt_fusion() %}
+            {# 
+         dbt fusion does not run Databricks statements in the same session, so we can't use temp
+         views.
+         (the view will be dropped later as has_temp_table_support returns False for Databricks)
+
+         More details here - https://github.com/dbt-labs/dbt-fusion/blob/fa78a4099553a805af7629ac80be55e23e24bb4c/crates/dbt-loader/src/dbt_macro_assets/dbt-databricks/macros/relations/table/create.sql#L54
+      #}
+            {% set relation_type = "view" %}
+        {% else %} {% set relation_type = "temporary view" %}
+        {% endif %}
+    {% else %} {% set relation_type = "table" %}
+    {% endif %}
+
+  create or replace {{ relation_type }} {{ relation }}
+  as {{ sql_query }}
+{% endmacro %}
+
+{% macro clickhouse__edr_get_create_table_as_sql(
+    temporary, relation, sql_query, expiration_hours=none
+) %}
+    {# ClickHouse does not support database-scoped temporary tables, so we force temporary to be false. #}
+    {{ dbt.get_create_table_as_sql(false, relation, sql_query) }}
+{% endmacro %}
+
+{% macro duckdb__edr_get_create_table_as_sql(
+    temporary, relation, sql_query, expiration_hours=none
+) %}
+  create or replace {% if temporary %} temporary {% endif %} table {{ relation }}
+  as {{ sql_query }}
+{% endmacro %}
+
+{% macro trino__edr_get_create_table_as_sql(
+    temporary, relation, sql_query, expiration_hours=none
+) %}
+    {# dbt-trino's create_table_as accesses model.config which fails when called
+     outside a model context (e.g. from edr_create_table_as). Use simplified SQL. #}
+  create table {{ relation }}
+  as {{ sql_query }}
+{% endmacro %}
+
+{% macro spark__edr_get_create_table_as_sql(
+    temporary, relation, sql_query, expiration_hours=none
+) %}
+    {# Spark: use a temporary view for temp tables, regular table otherwise #}
+    {% if temporary %}
+    create or replace temporary view {{ relation }}
+    as {{ sql_query }}
+    {% else %}
+        {# Without USING, Spark defaults to a Hive text table, which splits rows
+       on newline values when they are read. dbt-spark defaults file_format to parquet. #}
+    create table {{ relation }} using {{ elementary.get_config_var("spark_file_format") }}
+    as {{ sql_query }}
+    {% endif %}
+{% endmacro %}
+
+{% macro fabricspark__edr_get_create_table_as_sql(
+    temporary, relation, sql_query, expiration_hours=none
+) %}
+    {{
+        return(
+            elementary.spark__edr_get_create_table_as_sql(
+                temporary, relation, sql_query, expiration_hours=expiration_hours
+            )
+        )
+    }}
+{% endmacro %}
