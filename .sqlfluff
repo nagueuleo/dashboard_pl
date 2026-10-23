@@ -1,24 +1,9 @@
 [sqlfluff]
 dialect = databricks
 templater = dbt
-sql_file_exts = .sql
-encoding = utf-8
 max_line_length = 100
-large_file_skip_byte_limit = 0
-
 [sqlfluff:templater:dbt]
 project_dir = .
+profiles_dir = .ci
 profile = dashboard_pl
-
-[sqlfluff:indentation]
-tab_space_size = 4
-indent_unit = space
-
-[sqlfluff:rules:capitalisation.keywords]
-capitalisation_policy = upper
-
-[sqlfluff:rules:capitalisation.identifiers]
-extended_capitalisation_policy = lower
-
-[sqlfluff:rules:layout.spacing]
-no_trailing_whitespace = true
+target = dev
