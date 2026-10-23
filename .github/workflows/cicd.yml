@@ -28,14 +28,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Diagnose dbt profile
-        run: |
-            pwd
-            ls -la
-            echo "DBT_PROFILES_DIR=$DBT_PROFILES_DIR"
-            ls -la "$DBT_PROFILES_DIR"
-            python -c "import yaml, os; p=os.path.join(os.environ['DBT_PROFILES_DIR'],'profiles.yml'); print(list(yaml.safe_load(open(p)).keys()))"
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
