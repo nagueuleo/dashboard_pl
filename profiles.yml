@@ -7,7 +7,7 @@ dashboard_pl:
       http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
       schema: bronze
       threads: 4
-      token: dapi7ef072fa9d0b6113fa1e50ea41569a4d
+      token: "{{ env_var('DATABRICKS_TOKEN') }}"
       type: databricks
     prod:
       catalog: prod
@@ -15,5 +15,5 @@ dashboard_pl:
       http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
       schema: bronze
       threads: 4
-      token: dapi7ef072fa9d0b6113fa1e50ea41569a4d
+      token: "{{ env_var('DATABRICKS_TOKEN') }}"
       type: databricks

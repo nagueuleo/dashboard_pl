@@ -89670,3 +89670,111 @@ drop table if exists `dev`.`bronze`.`dbt_columns__tmp_20261023181134346077`
 [0m20:11:55.669426 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000024770753B90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000247781743C0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000247781754F0>]}
 [0m20:11:55.670262 [debug] [MainThread]: Flushing usage events
 [0m20:11:57.501027 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m11:26:39.718445 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000256B8778AD0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000256BAD379D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000256BAD37ED0>]}
+
+
+============================== 11:26:40.118089 | d1392f75-0da0-49dc-92ea-b1c3e6883704 ==============================
+[0m11:26:40.118089 [info ] [MainThread]: Running with dbt=1.12.5
+[0m11:26:40.247781 [debug] [MainThread]: running dbt with arguments {'version_check': 'True', 'no_print': 'None', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'target_path': 'None', 'maximum_seed_size_mib': '1', 'printer_width': '80', 'write_json': 'True', 'introspect': 'True', 'log_cache_events': 'False', 'empty': 'None', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'profiles_dir': 'D:\\DOCUMENTS\\LEO\\Projet\\Data analyst\\premiere league analysis\\DATA\\dasboard_pl\\dasboard_pl', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'partial_parse': 'True', 'indirect_selection': 'eager', 'hints_enabled': 'True', 'invocation_command': 'dbt debug', 'use_experimental_parser': 'False', 'use_colors': 'True', 'log_path': 'D:\\DOCUMENTS\\LEO\\Projet\\Data analyst\\premiere league analysis\\DATA\\dasboard_pl\\dasboard_pl\\logs'}
+[0m11:26:41.560584 [info ] [MainThread]: dbt version: 1.12.5
+[0m11:26:41.593672 [info ] [MainThread]: python version: 3.13.9
+[0m11:26:41.645644 [info ] [MainThread]: python path: C:\Users\nague\anaconda3\python.exe
+[0m11:26:41.753184 [info ] [MainThread]: os info: Windows-11-10.0.26100-SP0
+[0m11:27:15.431918 [debug] [MainThread]: Spark adapter: Setting pyhive.hive logging to ERROR
+[0m11:27:15.433320 [debug] [MainThread]: Spark adapter: Setting thrift.transport logging to ERROR
+[0m11:27:15.434657 [debug] [MainThread]: Spark adapter: Setting thrift.protocol logging to ERROR
+[0m11:27:58.712076 [info ] [MainThread]: Using profiles dir at D:\DOCUMENTS\LEO\Projet\Data analyst\premiere league analysis\DATA\dasboard_pl\dasboard_pl
+[0m11:27:58.864305 [info ] [MainThread]: Using profiles.yml file at D:\DOCUMENTS\LEO\Projet\Data analyst\premiere league analysis\DATA\dasboard_pl\dasboard_pl\profiles.yml
+[0m11:27:59.141163 [info ] [MainThread]: Using dbt_project.yml file at D:\DOCUMENTS\LEO\Projet\Data analyst\premiere league analysis\DATA\dasboard_pl\dasboard_pl\dbt_project.yml
+[0m11:27:59.198418 [info ] [MainThread]: adapter type: databricks
+[0m11:27:59.281555 [info ] [MainThread]: adapter version: 1.12.7
+[0m11:28:01.874409 [info ] [MainThread]: Configuration:
+[0m11:28:01.912909 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m11:28:02.009265 [info ] [MainThread]:   dbt_project.yml file [[32mOK found and valid[0m]
+[0m11:28:02.056804 [info ] [MainThread]: Required dependencies:
+[0m11:28:02.111844 [debug] [MainThread]: Executing "git --help"
+[0m11:28:04.695797 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]\n           [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]\n           [--work-tree=<path>] [--namespace=<name>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone      Clone a repository into a new directory\n   init       Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add        Add file contents to the index\n   mv         Move or rename a file, a directory, or a symlink\n   restore    Restore working tree files\n   rm         Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect     Use binary search to find the commit that introduced a bug\n   diff       Show changes between commits, commit and working tree, etc\n   grep       Print lines matching a pattern\n   log        Show commit logs\n   show       Show various types of objects\n   status     Show the working tree status\n\ngrow, mark and tweak your common history\n   backfill   Download missing objects in a partial clone\n   branch     List, create, or delete branches\n   commit     Record changes to the repository\n   history    EXPERIMENTAL: Rewrite history\n   merge      Join two or more development histories together\n   rebase     Reapply commits on top of another base tip\n   reset      Set `HEAD` or the index to a known state\n   switch     Switch branches\n   tag        Create, list, delete or verify tags\n\ncollaborate (see also: git help workflows)\n   fetch      Download objects and refs from another repository\n   pull       Fetch from and integrate with another repository or a local branch\n   push       Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m11:28:04.698725 [debug] [MainThread]: STDERR: "b''"
+[0m11:28:04.700360 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m11:28:04.799585 [info ] [MainThread]: Connection:
+[0m11:28:04.858255 [info ] [MainThread]:   host: dbc-65076254-ed0b.cloud.databricks.com
+[0m11:28:04.905195 [info ] [MainThread]:   http_path: /sql/1.0/warehouses/7c026b071771c36a
+[0m11:28:04.927228 [info ] [MainThread]:   catalog: dev
+[0m11:28:04.957341 [info ] [MainThread]:   schema: bronze
+[0m11:28:04.980214 [info ] [MainThread]: Registered adapter: databricks=1.12.7
+[0m11:28:11.088113 [debug] [MainThread]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=debug) - Creating connection
+[0m11:28:11.090437 [debug] [MainThread]: Acquiring new databricks connection 'debug'
+[0m11:28:48.164806 [info ] [MainThread]: Databricks adapter:   SPOG host (host_type='workspace'): no
+[0m11:28:48.179383 [info ] [MainThread]: Databricks adapter:   workspace_id (from ?o= in http_path): None
+[0m11:28:48.193675 [info ] [MainThread]: Databricks adapter:   databricks-sql-connector version: 4.4.0 (supported)
+[0m11:28:48.197146 [info ] [MainThread]: Databricks adapter:   databricks-sdk version: 0.117.0 (supported)
+[0m11:28:48.230134 [debug] [MainThread]: Using databricks connection "debug"
+[0m11:28:48.231585 [debug] [MainThread]: On debug: select 1 as id
+[0m11:28:48.232792 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m11:28:53.153814 [debug] [MainThread]: Databricks adapter: Connection(session-id=01f1cf8d-5430-1b57-8c7c-d83082dd1691) - Created
+[0m11:28:58.226358 [debug] [MainThread]: SQL status: OK in 9.990 seconds
+[0m11:28:58.230429 [debug] [MainThread]: Databricks adapter: Cursor(session-id=01f1cf8d-5430-1b57-8c7c-d83082dd1691, command-id=01f1cf8d-54d5-1ca7-b1d3-aea19e928711) - Closing
+[0m11:28:58.469808 [debug] [MainThread]: On debug: Close
+[0m11:28:58.471319 [debug] [MainThread]: Databricks adapter: Connection(session-id=01f1cf8d-5430-1b57-8c7c-d83082dd1691) - Closing
+[0m11:28:58.684276 [info ] [MainThread]:   Connection test: [[32mOK connection ok[0m]
+
+[0m11:28:58.690706 [info ] [MainThread]: [32mAll checks passed![0m
+[0m11:28:58.707045 [debug] [MainThread]: Command `dbt debug` succeeded at 11:28:58.706685 after 144.11 seconds
+[0m11:28:58.708265 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000256C11EFE10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000256C137DD90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000256C1232360>]}
+[0m11:28:58.709725 [debug] [MainThread]: Flushing usage events
+[0m11:29:02.444369 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m11:38:38.771135 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020E887E8AD0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020E8AD97ED0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020E8AD97B10>]}
+
+
+============================== 11:38:38.784065 | b8787f9d-5109-48f2-93c1-5c03fb4062de ==============================
+[0m11:38:38.784065 [info ] [MainThread]: Running with dbt=1.12.5
+[0m11:38:38.786447 [debug] [MainThread]: running dbt with arguments {'version_check': 'True', 'no_print': 'None', 'static_parser': 'True', 'target_path': 'None', 'maximum_seed_size_mib': '1', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'printer_width': '80', 'write_json': 'True', 'introspect': 'True', 'log_cache_events': 'False', 'empty': 'None', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'profiles_dir': 'D:\\DOCUMENTS\\LEO\\Projet\\Data analyst\\premiere league analysis\\DATA\\dasboard_pl\\dasboard_pl', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'partial_parse': 'True', 'use_colors': 'True', 'hints_enabled': 'True', 'indirect_selection': 'eager', 'use_experimental_parser': 'False', 'invocation_command': 'dbt debug', 'log_path': 'D:\\DOCUMENTS\\LEO\\Projet\\Data analyst\\premiere league analysis\\DATA\\dasboard_pl\\dasboard_pl\\logs'}
+[0m11:38:38.869727 [info ] [MainThread]: dbt version: 1.12.5
+[0m11:38:38.872654 [info ] [MainThread]: python version: 3.13.9
+[0m11:38:38.883389 [info ] [MainThread]: python path: C:\Users\nague\anaconda3\python.exe
+[0m11:38:38.904632 [info ] [MainThread]: os info: Windows-11-10.0.26100-SP0
+[0m11:38:53.468533 [debug] [MainThread]: Spark adapter: Setting pyhive.hive logging to ERROR
+[0m11:38:53.469902 [debug] [MainThread]: Spark adapter: Setting thrift.transport logging to ERROR
+[0m11:38:53.471043 [debug] [MainThread]: Spark adapter: Setting thrift.protocol logging to ERROR
+[0m11:38:58.511274 [info ] [MainThread]: Using profiles dir at D:\DOCUMENTS\LEO\Projet\Data analyst\premiere league analysis\DATA\dasboard_pl\dasboard_pl
+[0m11:38:58.515197 [info ] [MainThread]: Using profiles.yml file at D:\DOCUMENTS\LEO\Projet\Data analyst\premiere league analysis\DATA\dasboard_pl\dasboard_pl\profiles.yml
+[0m11:38:58.518388 [info ] [MainThread]: Using dbt_project.yml file at D:\DOCUMENTS\LEO\Projet\Data analyst\premiere league analysis\DATA\dasboard_pl\dasboard_pl\dbt_project.yml
+[0m11:38:58.554454 [info ] [MainThread]: adapter type: databricks
+[0m11:38:58.562618 [info ] [MainThread]: adapter version: 1.12.7
+[0m11:38:59.355620 [info ] [MainThread]: Configuration:
+[0m11:38:59.358054 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m11:38:59.360232 [info ] [MainThread]:   dbt_project.yml file [[32mOK found and valid[0m]
+[0m11:38:59.361910 [info ] [MainThread]: Required dependencies:
+[0m11:38:59.363663 [debug] [MainThread]: Executing "git --help"
+[0m11:38:59.885490 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]\n           [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]\n           [--work-tree=<path>] [--namespace=<name>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone      Clone a repository into a new directory\n   init       Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add        Add file contents to the index\n   mv         Move or rename a file, a directory, or a symlink\n   restore    Restore working tree files\n   rm         Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect     Use binary search to find the commit that introduced a bug\n   diff       Show changes between commits, commit and working tree, etc\n   grep       Print lines matching a pattern\n   log        Show commit logs\n   show       Show various types of objects\n   status     Show the working tree status\n\ngrow, mark and tweak your common history\n   backfill   Download missing objects in a partial clone\n   branch     List, create, or delete branches\n   commit     Record changes to the repository\n   history    EXPERIMENTAL: Rewrite history\n   merge      Join two or more development histories together\n   rebase     Reapply commits on top of another base tip\n   reset      Set `HEAD` or the index to a known state\n   switch     Switch branches\n   tag        Create, list, delete or verify tags\n\ncollaborate (see also: git help workflows)\n   fetch      Download objects and refs from another repository\n   pull       Fetch from and integrate with another repository or a local branch\n   push       Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m11:38:59.887678 [debug] [MainThread]: STDERR: "b''"
+[0m11:38:59.889305 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m11:38:59.893232 [info ] [MainThread]: Connection:
+[0m11:38:59.895355 [info ] [MainThread]:   host: dbc-65076254-ed0b.cloud.databricks.com
+[0m11:38:59.897518 [info ] [MainThread]:   http_path: /sql/1.0/warehouses/7c026b071771c36a
+[0m11:38:59.899398 [info ] [MainThread]:   catalog: dev
+[0m11:38:59.906971 [info ] [MainThread]:   schema: bronze
+[0m11:38:59.921232 [info ] [MainThread]: Registered adapter: databricks=1.12.7
+[0m11:39:03.464586 [debug] [MainThread]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=debug) - Creating connection
+[0m11:39:03.466436 [debug] [MainThread]: Acquiring new databricks connection 'debug'
+[0m11:39:06.497333 [info ] [MainThread]: Databricks adapter:   SPOG host (host_type='workspace'): no
+[0m11:39:06.531716 [info ] [MainThread]: Databricks adapter:   workspace_id (from ?o= in http_path): None
+[0m11:39:06.546187 [info ] [MainThread]: Databricks adapter:   databricks-sql-connector version: 4.4.0 (supported)
+[0m11:39:06.550889 [info ] [MainThread]: Databricks adapter:   databricks-sdk version: 0.117.0 (supported)
+[0m11:39:06.628225 [debug] [MainThread]: Using databricks connection "debug"
+[0m11:39:06.631402 [debug] [MainThread]: On debug: select 1 as id
+[0m11:39:06.646517 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m11:39:12.219264 [debug] [MainThread]: Databricks adapter: Connection(session-id=01f1cf8e-c52f-13d8-947b-390c550b4f1e) - Created
+[0m11:39:12.547843 [debug] [MainThread]: SQL status: OK in 5.900 seconds
+[0m11:39:12.551069 [debug] [MainThread]: Databricks adapter: Cursor(session-id=01f1cf8e-c52f-13d8-947b-390c550b4f1e, command-id=01f1cf8e-c5d5-1dca-9e9a-0238869d09db) - Closing
+[0m11:39:12.552561 [debug] [MainThread]: On debug: Close
+[0m11:39:12.554042 [debug] [MainThread]: Databricks adapter: Connection(session-id=01f1cf8e-c52f-13d8-947b-390c550b4f1e) - Closing
+[0m11:39:12.793739 [info ] [MainThread]:   Connection test: [[32mOK connection ok[0m]
+
+[0m11:39:12.908325 [info ] [MainThread]: [32mAll checks passed![0m
+[0m11:39:13.025184 [debug] [MainThread]: Command `dbt debug` succeeded at 11:39:13.024297 after 35.15 seconds
+[0m11:39:13.027030 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020E88BBB950>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020E91299250>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020E91151F20>]}
+[0m11:39:13.029348 [debug] [MainThread]: Flushing usage events
+[0m11:39:17.118217 [debug] [MainThread]: An error was encountered while trying to flush usage events

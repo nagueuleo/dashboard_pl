@@ -47,5 +47,7 @@ WITH stats_data AS (
         ON l.opponent = o.opponent
     LEFT JOIN {{ ref('Dim_date') }} AS d
         ON l.date = d.full_date
-) 
-SELECT * FROM stats_data
+)
+
+SELECT *
+FROM stats_data
