@@ -1,38 +1,53 @@
-{{
-        config(
-            materialized='table'
-        )
-}}
-
-with stats_data as (
-    select
-        row_number() over(order by id) as stats_key,
+WITH stats_data AS (
+    SELECT
         l.league,
         l.season,
         t.team,
-        game,
-        date,
-        time,
-        round,
-        day,
-        venue,
-        result,
-        GF,
-        GA,
-        xG,
-        xGA,
-        Poss,
-        attendance,
-        Captain,
-        Formation,
-        Opp_Formation,
-        Referee,
-        match_report,
-        fromation_key,
-        refree_key,
-        team_key,
-        venue_key,
-        opponent_key
-       
-    from {{ ref('int_pl_data') }}
+        l.opponent,
+        l.game,
+        l.date,
+        l.time,
+        l.round,
+        l.day,
+        l.venue,
+        l.result,
+        l.gf,
+        l.ga,
+        l.xg,
+        l.xga,
+        l.poss,
+        l.attendance,
+        l.captain,
+        l.formation,
+        l.opp_formation,
+        l.referee,
+        l.match_report,
+        f.formation_key,
+        r.refree_key,
+        t.team_key,
+        v.venue_key,
+        o.opponent_key,
+        d.date_key,
+        ROW_NUMBER() OVER (
+            ORDER BY
+                l.date,
+                l.team,
+                l.opponent
+        ) AS stats_key
+    FROM {{ ref('int_pl_data') }} AS l
+    LEFT JOIN {{ ref('Dim_formation') }} AS f
+        ON l.formation = f.formation
+    LEFT JOIN {{ ref('Dim_refree') }} AS r
+        ON l.referee = r.referee
+    LEFT JOIN {{ ref('Dim_team') }} AS t
+        ON l.team = t.team
+    LEFT JOIN {{ ref('Dim_venue') }} AS v
+        ON l.venue = v.venue
+    LEFT JOIN {{ ref('Dim_opponent') }} AS o
+        ON l.opponent = o.opponent
+    LEFT JOIN {{ ref('Dim_date') }} AS d
+        ON l.date = d.full_date
 )
+
+SELECT *
+FROM stats_data

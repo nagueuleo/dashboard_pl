@@ -1,0 +1,702 @@
+==================== 2026-10-23T08:29:43.845482Z | 00000000-0000-0000-0000-000000000000 ====================
+==================== 2026-10-23T08:29:43.866897Z | bb3108ed-b3e3-4430-a336-ba4651113e3f ====================
+08:29:43.869712 [info ]: Starting dbt LSP server
+08:29:43.873242 [info ]: Connecting to LSP client on port 8000
+08:29:44.204408 [info ]: Successfully connected to LSP client
+08:29:44.205308 [info ]: Creating LSP service...
+08:29:44.235895 [info ]: Creating LSP server...
+08:29:44.235940 [info ]: Starting LSP server...
+08:29:49.339376 [info ]: Loading profiles.yml
+08:30:00.278640 [debug]: Ignoring unsupported LSP notification
+08:30:00.291534 [debug]: Ignoring unsupported LSP notification
+==================== 2026-10-23T08:30:11.419798Z | 546109ab-b725-4b56-8502-cea72252b378 ====================
+08:30:11.424247 [info ]: Started loading project
+08:30:11.462107 [info ]: Loading profiles.yml
+08:30:12.153710 [info ]: Loading packages.yml
+08:30:12.223360 [debug]:    Started loading packages
+08:30:13.222793 [debug]:     Loaded [  1.00s] packages
+08:30:13.290450 [info ]: Finished loading project [  1.87s]
+08:30:13.306361 [info ]: Started parsing (46 nodes)
+08:30:16.397001 [debug]:    Started building model nodes
+08:30:16.396974 [debug]:    Started building model nodes
+08:30:16.396974 [debug]:    Started building model nodes
+08:30:16.398638 [debug]:   Finished [  0.00s] building model nodes
+08:30:16.398678 [debug]:   Finished [  0.00s] building model nodes
+08:30:16.398700 [debug]:   Finished [  0.00s] building model nodes
+08:30:16.418464 [debug]:    Started resolving data tests
+08:30:16.418462 [debug]:    Started resolving data tests
+08:30:16.418514 [debug]:    Started resolving data tests
+08:30:16.419672 [debug]:   Finished [  0.00s] resolving data tests
+08:30:16.419826 [debug]:   Finished [  0.00s] resolving data tests
+08:30:16.419826 [debug]:   Finished [  0.00s] resolving data tests
+08:30:16.436024 [debug]:    Started building model nodes
+08:30:16.436076 [debug]:   Finished [  0.00s] building model nodes
+08:30:16.444651 [debug]:    Started resolving data tests
+08:30:16.444782 [debug]:   Finished [  0.00s] resolving data tests
+08:30:16.465939 [debug]:    Started building model nodes
+08:30:16.465990 [debug]:   Finished [  0.00s] building model nodes
+08:30:16.467239 [debug]:    Started resolving data tests
+08:30:16.467337 [debug]:   Finished [  0.00s] resolving data tests
+08:30:16.480816 [debug]:    Started building model nodes
+08:30:16.510009 [debug]:   Finished [  0.03s] building model nodes
+08:30:16.512022 [debug]:    Started resolving data tests
+08:30:16.512122 [debug]:   Finished [  0.00s] resolving data tests
+08:30:16.513077 [debug]: Finished parsing dbt_packages\elementary\models/alerts_views.yml [  0.03s]
+08:30:16.517771 [debug]: Finished parsing dbt_packages\elementary\models/dbt_artifacts.yml [  0.00s]
+08:30:16.519212 [debug]: Finished parsing dbt_packages\elementary\models/elementary_tests.yml [  0.00s]
+08:30:16.528218 [debug]: Finished parsing dbt_packages\elementary\models/run_results.yml [  0.01s]
+08:30:16.567933 [debug]:    Started building model nodes
+08:30:16.568114 [debug]:   Finished [  0.00s] building model nodes
+08:30:16.580250 [debug]:    Started resolving data tests
+08:30:16.580573 [debug]:   Finished [  0.00s] resolving data tests
+08:30:16.809289 [debug]: Finished parsing dbt_packages\elementary\models/edr/alerts/alerts_anomaly_detection.sql [  0.18s]
+08:30:16.816440 [debug]: Finished parsing dbt_packages\elementary\models/edr/alerts/alerts_dbt_models.sql [  0.01s]
+08:30:16.825803 [debug]: Finished parsing dbt_packages\elementary\models/edr/alerts/alerts_dbt_source_freshness.sql [  0.01s]
+08:30:16.829730 [debug]: Finished parsing dbt_packages\elementary\models/edr/alerts/alerts_dbt_tests.sql [  0.00s]
+08:30:16.834471 [debug]: Finished parsing dbt_packages\elementary\models/edr/alerts/alerts_schema_changes.sql [  0.00s]
+08:30:16.918603 [debug]: Finished parsing dbt_packages\elementary\models/edr/data_monitoring/anomaly_detection/anomaly_threshold_sensitivity.sql [  0.08s]
+08:30:16.931190 [debug]: Finished parsing dbt_packages\elementary\models/edr/data_monitoring/anomaly_detection/metrics_anomaly_score.sql [  0.01s]
+08:30:17.052310 [debug]: Finished parsing dbt_packages\elementary\models/edr/data_monitoring/data_monitoring/data_monitoring_metrics.sql [  0.12s]
+08:30:17.084352 [debug]: Finished parsing dbt_packages\elementary\models/edr/data_monitoring/schema_changes/schema_columns_snapshot.sql [  0.03s]
+08:30:17.101997 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_artifacts_hashes.sql [  0.02s]
+08:30:17.246065 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_columns.sql [  0.14s]
+08:30:17.316117 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_exposures.sql [  0.08s]
+08:30:17.333655 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_groups.sql [  0.02s]
+08:30:17.432246 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_invocations.sql [  0.10s]
+08:30:17.465799 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_metrics.sql [  0.05s]
+08:30:17.746309 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_models.sql [  0.28s]
+08:30:17.940742 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_run_results.sql [  0.21s]
+08:30:18.062096 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_seeds.sql [  0.12s]
+08:30:18.279958 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_snapshots.sql [  0.23s]
+08:30:18.410641 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_sources.sql [  0.13s]
+08:30:18.846059 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_tests.sql [  0.44s]
+08:30:19.034148 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/dbt_source_freshness_results.sql [  0.19s]
+08:30:19.491352 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/elementary_test_results.sql [  0.46s]
+08:30:19.518146 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/job_run_results.sql [  0.03s]
+08:30:19.721810 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/model_run_results.sql [  0.20s]
+08:30:19.730840 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/seed_run_results.sql [  0.01s]
+08:30:19.877573 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/snapshot_run_results.sql [  0.15s]
+08:30:19.892797 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/test_result_rows.sql [  0.03s]
+08:30:19.906850 [debug]: Finished parsing dbt_packages\elementary\models/edr/system/metadata.sql [  0.01s]
+08:30:20.030231 [debug]:    Started building model nodes
+08:30:20.898268 [debug]:   Finished [  0.87s] building model nodes
+08:30:20.913892 [debug]: Finished parsing dbt_packages\elementary\models/edr/system/monitors_runs.sql [  1.01s]
+08:30:21.672488 [debug]:    Started resolving data tests
+08:30:21.674683 [debug]:   Finished [  0.00s] resolving data tests
+08:30:21.803747 [debug]: Finished parsing models/marts/data_test.yml [  0.01s]
+08:30:21.814615 [debug]: Finished parsing models/staging/source.yml [  0.01s]
+08:30:22.094181 [debug]: Finished parsing models/intermediate/int_pl_data.sql [  0.05s]
+08:30:22.109953 [debug]: Finished parsing models/marts/Dim_date.sql [  0.02s]
+08:30:22.113511 [debug]: Finished parsing models/marts/Dim_formation.sql [  0.00s]
+08:30:22.120371 [debug]: Finished parsing models/marts/Dim_opponent.sql [  0.01s]
+08:30:22.125471 [debug]: Finished parsing models/marts/Dim_refree.sql [  0.01s]
+08:30:22.127428 [debug]: Finished parsing models/marts/Dim_team.sql [  0.00s]
+08:30:22.137700 [debug]: Finished parsing models/marts/Dim_venue.sql [  0.01s]
+08:30:22.139987 [debug]: Finished parsing models/marts/Fact_pldata.sql [  0.01s]
+08:30:22.144172 [debug]:    Started building model nodes
+08:30:22.241994 [debug]:   Finished [  0.10s] building model nodes
+08:30:22.243428 [debug]: Finished parsing models/staging/stg_data.sql [  0.10s]
+08:30:22.392441 [debug]:    Started resolving data tests
+08:30:22.427263 [debug]: Finished parsing tests/singulier/test_valeur_null.sql [  0.03s]
+08:30:22.427323 [debug]:   Finished [  0.03s] resolving data tests
+08:30:22.454281 [debug]:    Started typechecking macros
+08:30:42.114646 [debug]:   Finished [ 19.66s] typechecking macros
+08:30:42.207728 [info ]: Finished parsing [ 28.90s] (46 nodes, 0 skipped, 0 errors)
+08:30:42.229315 [info ]: Cached model count updated: 9 models (estimate)
+08:30:42.229364 [info ]: Cached model count updated: 39 models (accurate)
+08:30:42.237878 [info ]: Started scheduling
+08:30:42.240238 [info ]: Finished scheduling [  0.00s]
+08:30:42.241306 [debug]: Compilation - 0 nodes selected: {}
+08:30:42.242318 [warn ]: [NoNodesForSelectionCriteria (dbt1092)]: The selection criterion '' does not match any enabled nodes
+08:30:42.242752 [warn ]: [NoNodesSelected (dbt1601)]: Nothing to do. Try checking your model configs and model specification args
+08:30:42.242919 [info ]: Started scheduling
+08:30:42.245327 [info ]: Finished scheduling [  0.00s]
+08:30:42.253528 [debug]: Initializing schema store with entry: Frontier(CanonicalFqn { catalog: "workspace", schema: "pl_data", table: "pl_data" }) and interval: None
+08:30:48.659485 [info ]: Started building task graph
+08:30:48.660642 [info ]: Finished building task graph [  0.00s]
+08:30:48.819834 [info ]: Started on-run-start hooks (1 nodes)
+08:30:48.935772 [info ]: Elementary: Runtime data: {"config": {"elementary_full_refresh": true}, "database": "workspace", "dbt_version": "2.0.0", "elementary_version": "0.24.0", "schema": "pl_data"}
+08:30:48.950175 [debug]: Databricks driver resolved: databricks 0.21.0.dev+dbt0.21.13
+08:31:05.183088 [debug]: Ignoring unsupported LSP notification
+08:31:05.183526 [debug]: Ignoring unsupported LSP notification
+08:31:05.183654 [debug]: Ignoring unsupported LSP notification
+08:31:45.336885 [info ]: Finished on-run-start hooks [ 56.52s] (1 nodes, 0 skipped, 0 errors)
+08:31:47.198626 [error]: [DbDriverFailed (dbt1308)]: failed to ping database: databricks: request error: error connecting: host=dbc-65076254-ed0b.cloud.databricks.com port=443, httpPath=/sql/1.0/warehouses/7c026b071771c36a: databricks: request error: open session request error: Post "https://dbc-65076254-ed0b.cloud.databricks.com:443/sql/1.0/warehouses/7c026b071771c36a": request error after 1 attempt(s): Post "https://dbc-65076254-ed0b.cloud.databricks.com:443/sql/1.0/warehouses/7c026b071771c36a": dial tcp: lookup dbc-65076254-ed0b.cloud.databricks.com: i/o timeout
+(in <RUN_OPERATION>:1:9)
+  --> <RUN_OPERATION>:1:9
+08:31:47.273613 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' with 2 warnings and 1 error for target 'dev' [1m 36s]
+Processed: 1 hook
+Summary: 1 total | 1 error
+08:31:55.820913 [debug]: Ignoring unsupported LSP notification
+08:31:57.981912 [debug]: Ignoring unsupported LSP notification
+08:33:23.767682 [debug]: Ignoring unsupported LSP notification
+08:33:24.649375 [debug]: Ignoring unsupported LSP notification
+08:33:24.651148 [debug]: Ignoring unsupported LSP notification
+08:33:25.497041 [debug]: Ignoring unsupported LSP notification
+==================== 2026-10-23T08:33:29.219363Z | 4e8a6267-538a-4de2-b4db-eeaf58323788 ====================
+08:33:29.219585 [info ]: Started loading project
+08:33:29.220962 [info ]: Loading profiles.yml
+08:33:29.461180 [info ]: Loading packages.yml
+08:33:29.472652 [debug]:    Started loading packages
+08:33:29.977227 [debug]:     Loaded [  0.50s] packages
+08:33:29.980476 [info ]: Finished loading project [  0.76s]
+08:33:29.982446 [info ]: Started parsing (46 nodes)
+08:33:32.929327 [debug]:    Started building model nodes
+08:33:32.929378 [debug]:   Finished [  0.00s] building model nodes
+08:33:32.930945 [debug]:    Started resolving data tests
+08:33:32.931015 [debug]:   Finished [  0.00s] resolving data tests
+08:33:32.934659 [debug]:    Started building model nodes
+08:33:32.934688 [debug]:   Finished [  0.00s] building model nodes
+08:33:32.941483 [debug]:    Started resolving data tests
+08:33:32.941711 [debug]:   Finished [  0.00s] resolving data tests
+08:33:32.946809 [debug]:    Started building model nodes
+08:33:32.946854 [debug]:   Finished [  0.00s] building model nodes
+08:33:32.947131 [debug]:    Started building model nodes
+08:33:32.947152 [debug]:   Finished [  0.00s] building model nodes
+08:33:32.948209 [debug]:    Started resolving data tests
+08:33:32.948296 [debug]:   Finished [  0.00s] resolving data tests
+08:33:32.948748 [debug]:    Started resolving data tests
+08:33:32.948855 [debug]:   Finished [  0.00s] resolving data tests
+08:33:32.951323 [debug]:    Started building model nodes
+08:33:32.951352 [debug]:   Finished [  0.00s] building model nodes
+08:33:32.952954 [debug]:    Started resolving data tests
+08:33:32.953196 [debug]:   Finished [  0.00s] resolving data tests
+08:33:32.959784 [debug]:    Started building model nodes
+08:33:32.959845 [debug]:   Finished [  0.00s] building model nodes
+08:33:32.961227 [debug]:    Started resolving data tests
+08:33:32.961297 [debug]:   Finished [  0.00s] resolving data tests
+08:33:32.964039 [debug]:    Started building model nodes
+08:33:32.964068 [debug]:   Finished [  0.00s] building model nodes
+08:33:32.964313 [debug]: Finished parsing dbt_packages\elementary\models/alerts_views.yml [  0.01s]
+08:33:32.965337 [debug]:    Started resolving data tests
+08:33:32.965414 [debug]:   Finished [  0.00s] resolving data tests
+08:33:32.976121 [debug]: Finished parsing dbt_packages\elementary\models/dbt_artifacts.yml [  0.01s]
+08:33:32.979135 [debug]: Finished parsing dbt_packages\elementary\models/elementary_tests.yml [  0.00s]
+08:33:32.984582 [debug]: Finished parsing dbt_packages\elementary\models/run_results.yml [  0.01s]
+08:33:33.007705 [debug]: Finished parsing dbt_packages\elementary\models/edr/alerts/alerts_anomaly_detection.sql [  0.01s]
+08:33:33.016749 [debug]: Finished parsing dbt_packages\elementary\models/edr/alerts/alerts_dbt_models.sql [  0.01s]
+08:33:33.032988 [debug]: Finished parsing dbt_packages\elementary\models/edr/alerts/alerts_dbt_source_freshness.sql [  0.02s]
+08:33:33.043331 [debug]: Finished parsing dbt_packages\elementary\models/edr/alerts/alerts_dbt_tests.sql [  0.01s]
+08:33:33.051542 [debug]: Finished parsing dbt_packages\elementary\models/edr/alerts/alerts_schema_changes.sql [  0.01s]
+08:33:33.061367 [debug]: Finished parsing dbt_packages\elementary\models/edr/data_monitoring/anomaly_detection/anomaly_threshold_sensitivity.sql [  0.01s]
+08:33:33.069491 [debug]: Finished parsing dbt_packages\elementary\models/edr/data_monitoring/anomaly_detection/metrics_anomaly_score.sql [  0.01s]
+08:33:33.097577 [debug]: Finished parsing dbt_packages\elementary\models/edr/data_monitoring/data_monitoring/data_monitoring_metrics.sql [  0.03s]
+08:33:33.117353 [debug]: Finished parsing dbt_packages\elementary\models/edr/data_monitoring/schema_changes/schema_columns_snapshot.sql [  0.02s]
+08:33:33.124574 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_artifacts_hashes.sql [  0.01s]
+08:33:33.142814 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_columns.sql [  0.02s]
+08:33:33.167442 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_exposures.sql [  0.03s]
+08:33:33.187938 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_groups.sql [  0.02s]
+08:33:33.225531 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_invocations.sql [  0.04s]
+08:33:33.261161 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_metrics.sql [  0.04s]
+08:33:33.315449 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_models.sql [  0.06s]
+08:33:33.381877 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_run_results.sql [  0.07s]
+08:33:33.433763 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_seeds.sql [  0.05s]
+08:33:33.463172 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_snapshots.sql [  0.03s]
+08:33:33.497349 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_sources.sql [  0.04s]
+08:33:33.527297 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_tests.sql [  0.03s]
+08:33:33.543381 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/dbt_source_freshness_results.sql [  0.02s]
+08:33:33.569810 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/elementary_test_results.sql [  0.03s]
+08:33:33.584069 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/job_run_results.sql [  0.01s]
+08:33:33.590996 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/model_run_results.sql [  0.01s]
+08:33:33.593417 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/seed_run_results.sql [  0.00s]
+08:33:33.595769 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/snapshot_run_results.sql [  0.00s]
+08:33:33.617349 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/test_result_rows.sql [  0.02s]
+08:33:33.630661 [debug]: Finished parsing dbt_packages\elementary\models/edr/system/metadata.sql [  0.01s]
+08:33:33.643793 [debug]:    Started building model nodes
+08:33:33.718780 [debug]:   Finished [  0.07s] building model nodes
+08:33:33.719157 [debug]: Finished parsing dbt_packages\elementary\models/edr/system/monitors_runs.sql [  0.09s]
+08:33:33.799291 [debug]:    Started resolving data tests
+08:33:33.799390 [debug]:   Finished [  0.00s] resolving data tests
+08:33:33.810059 [debug]: Finished parsing models/marts/data_test.yml [  0.00s]
+08:33:33.811180 [debug]: Finished parsing models/staging/source.yml [  0.00s]
+08:33:33.825912 [debug]: Finished parsing models/intermediate/int_pl_data.sql [  0.00s]
+08:33:33.828494 [debug]: Finished parsing models/marts/Dim_date.sql [  0.00s]
+08:33:33.830176 [debug]: Finished parsing models/marts/Dim_formation.sql [  0.00s]
+08:33:33.832453 [debug]: Finished parsing models/marts/Dim_opponent.sql [  0.00s]
+08:33:33.834047 [debug]: Finished parsing models/marts/Dim_refree.sql [  0.00s]
+08:33:33.835573 [debug]: Finished parsing models/marts/Dim_team.sql [  0.00s]
+08:33:33.848709 [debug]: Finished parsing models/marts/Dim_venue.sql [  0.01s]
+08:33:33.851344 [debug]: Finished parsing models/marts/Fact_pldata.sql [  0.01s]
+08:33:33.856522 [debug]:    Started building model nodes
+08:33:33.872812 [debug]:   Finished [  0.02s] building model nodes
+08:33:33.873373 [debug]: Finished parsing models/staging/stg_data.sql [  0.02s]
+08:33:33.879129 [debug]:    Started resolving data tests
+08:33:33.883845 [debug]: Finished parsing tests/singulier/test_valeur_null.sql [  0.00s]
+08:33:33.883905 [debug]:   Finished [  0.00s] resolving data tests
+08:33:33.890336 [debug]:    Started typechecking macros
+08:33:35.948354 [debug]: Ignoring unsupported LSP notification
+08:33:37.553570 [debug]:   Finished [  3.66s] typechecking macros
+08:33:37.572904 [info ]: Finished parsing [  7.59s] (46 nodes, 0 skipped, 0 errors)
+08:33:37.577005 [info ]: Cached model count updated: 9 models (estimate)
+08:33:37.577052 [info ]: Cached model count updated: 39 models (accurate)
+08:33:37.579931 [info ]: Started scheduling
+08:33:37.609167 [info ]: Finished scheduling [  0.03s]
+08:33:37.609232 [debug]: Compilation - 1 nodes selected: {"model.dashboard_pl.Dim_date"}
+08:33:37.622538 [info ]: Started scheduling
+08:33:37.623708 [info ]: Finished scheduling [  0.00s]
+08:33:37.624860 [debug]: Initializing schema store with entry: Frontier(CanonicalFqn { catalog: "workspace", schema: "pl_data", table: "pl_data" }) and interval: None
+08:33:40.040151 [info ]: Started building task graph
+08:33:40.178703 [info ]: Finished building task graph [  0.14s]
+08:33:40.462475 [info ]: Started on-run-start hooks (1 nodes)
+08:33:40.573739 [info ]: Elementary: Runtime data: {"config": {"elementary_full_refresh": true}, "database": "workspace", "dbt_version": "2.0.0", "elementary_version": "0.24.0", "schema": "pl_data"}
+08:33:42.925436 [debug]: Ignoring unsupported LSP notification
+08:33:57.918826 [info ]: Finished on-run-start hooks [ 17.46s] (1 nodes, 0 skipped, 0 errors)
+08:33:57.919196 [info ]: Started rendering (1 nodes)
+08:33:57.919402 [info ]: Started model pl_data.Dim_date
+08:33:57.919490 [debug]: Started rendering model pl_data.Dim_date
+08:33:57.945806 [debug]: create_debug_span(...).entered() took 165µs
+08:33:59.450010 [debug]: Ignoring unsupported LSP notification
+08:34:01.504687 [debug]: stmt.execute() (submit+wait_for_completion, returns reader) took 3.5370564s
+08:34:01.504747 [debug]: reader.schema() took 15.5µs
+08:34:02.868203 [debug]: Query executed on node model.dashboard_pl.Dim_date:
+/* {"app": "dbt", "connection_name": "", "dbt_version": "2.0.0", "invocation_id": "4e8a6267-538a-4de2-b4db-eeaf58323788", "profile_name": "dashboard_pl", "target_name": "dev"} */
+select timestampdiff(day, date_trunc('day', '2025-01-01'), date_trunc('day', '2026-12-31'))
+08:34:03.896378 [error]: [TaskCancelled (dbt1404)]: Cancelled: SQL statement execution was cancelled
+(in models/marts/Dim_date.sql:5:5)
+  --> models/marts/Dim_date.sql:5:5
+08:34:03.897495 [debug]: Finished rendering [  5.98s] model pl_data.Dim_date [error]
+08:34:03.897594 [info ]: Finished rendering [  5.98s] (1 nodes, 0 skipped, 1 errors)
+08:34:03.899077 [info ]:     Failed model pl_data.Dim_date (table) [1 of 1 in 5.98s]
+08:34:04.171001 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' with 1 error for target 'dev' [35.0s]
+Processed: 1 hook | 1 model
+Summary: 2 total | 1 success | 1 error
+08:34:04.172264 [info ]: Waiting for lease on 'target' directory
+==================== 2026-10-23T08:34:05.914845Z | 96ba1b43-f5e0-4baf-8937-94058019468f ====================
+08:34:05.914955 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' successfully [110us]
+08:34:05.916789 [info ]: Waiting for lease on 'target' directory
+==================== 2026-10-23T08:34:06.212491Z | 0cc23aff-cccf-4dae-a073-324fbfe7e0f1 ====================
+08:34:06.212751 [info ]: Started loading project
+08:34:06.214205 [info ]: Loading profiles.yml
+08:34:06.277564 [info ]: Loading packages.yml
+08:34:06.293405 [debug]:    Started loading packages
+08:34:06.787234 [debug]:     Loaded [  0.49s] packages
+08:34:06.798641 [info ]: Finished loading project [  0.59s]
+08:34:06.800508 [info ]: Started parsing (46 nodes)
+08:34:08.293487 [debug]:    Started building model nodes
+08:34:08.293532 [debug]:   Finished [  0.00s] building model nodes
+08:34:08.295343 [debug]:    Started resolving data tests
+08:34:08.295440 [debug]:   Finished [  0.00s] resolving data tests
+08:34:08.300272 [debug]:    Started building model nodes
+08:34:08.300319 [debug]:   Finished [  0.00s] building model nodes
+08:34:08.301704 [debug]:    Started resolving data tests
+08:34:08.301895 [debug]:   Finished [  0.00s] resolving data tests
+08:34:08.309294 [debug]:    Started building model nodes
+08:34:08.309341 [debug]:   Finished [  0.00s] building model nodes
+08:34:08.315890 [debug]:    Started resolving data tests
+08:34:08.316339 [debug]:   Finished [  0.00s] resolving data tests
+08:34:08.320030 [debug]:    Started building model nodes
+08:34:08.320062 [debug]:   Finished [  0.00s] building model nodes
+08:34:08.325060 [debug]:    Started resolving data tests
+08:34:08.386600 [debug]:   Finished [  0.06s] resolving data tests
+08:34:08.389000 [debug]:    Started building model nodes
+08:34:08.389032 [debug]:   Finished [  0.00s] building model nodes
+08:34:08.390959 [debug]:    Started resolving data tests
+08:34:08.391177 [debug]:   Finished [  0.00s] resolving data tests
+08:34:08.536103 [debug]: Finished parsing dbt_packages\elementary\models/alerts_views.yml [  0.00s]
+08:34:08.548561 [debug]: Finished parsing dbt_packages\elementary\models/dbt_artifacts.yml [  0.01s]
+08:34:08.549449 [debug]: Finished parsing dbt_packages\elementary\models/elementary_tests.yml [  0.00s]
+08:34:08.552557 [debug]: Finished parsing dbt_packages\elementary\models/run_results.yml [  0.00s]
+08:34:08.583606 [debug]:    Started building model nodes
+08:34:08.583638 [debug]:   Finished [  0.00s] building model nodes
+08:34:08.592904 [debug]:    Started resolving data tests
+08:34:08.593485 [debug]:   Finished [  0.00s] resolving data tests
+08:34:08.598389 [debug]:    Started building model nodes
+08:34:08.598417 [debug]:   Finished [  0.00s] building model nodes
+08:34:08.599756 [debug]:    Started resolving data tests
+08:34:08.599828 [debug]:   Finished [  0.00s] resolving data tests
+08:34:08.647054 [debug]: Finished parsing dbt_packages\elementary\models/edr/alerts/alerts_anomaly_detection.sql [  0.08s]
+08:34:08.718819 [debug]: Finished parsing dbt_packages\elementary\models/edr/alerts/alerts_dbt_models.sql [  0.07s]
+08:34:08.762024 [debug]: Finished parsing dbt_packages\elementary\models/edr/alerts/alerts_dbt_source_freshness.sql [  0.04s]
+08:34:08.855837 [debug]: Finished parsing dbt_packages\elementary\models/edr/alerts/alerts_dbt_tests.sql [  0.09s]
+08:34:08.966581 [debug]: Finished parsing dbt_packages\elementary\models/edr/alerts/alerts_schema_changes.sql [  0.11s]
+08:34:09.060913 [debug]: Finished parsing dbt_packages\elementary\models/edr/data_monitoring/anomaly_detection/anomaly_threshold_sensitivity.sql [  0.09s]
+08:34:09.175938 [debug]: Finished parsing dbt_packages\elementary\models/edr/data_monitoring/anomaly_detection/metrics_anomaly_score.sql [  0.12s]
+08:34:09.313876 [debug]: Finished parsing dbt_packages\elementary\models/edr/data_monitoring/data_monitoring/data_monitoring_metrics.sql [  0.14s]
+08:34:09.367491 [debug]: Finished parsing dbt_packages\elementary\models/edr/data_monitoring/schema_changes/schema_columns_snapshot.sql [  0.05s]
+08:34:09.438297 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_artifacts_hashes.sql [  0.07s]
+08:34:09.531777 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_columns.sql [  0.09s]
+08:34:09.590615 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_exposures.sql [  0.06s]
+08:34:09.618309 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_groups.sql [  0.03s]
+08:34:09.698905 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_invocations.sql [  0.08s]
+08:34:09.757725 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_metrics.sql [  0.06s]
+08:34:09.868763 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_models.sql [  0.11s]
+08:34:10.027276 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_run_results.sql [  0.16s]
+08:34:10.105891 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_seeds.sql [  0.08s]
+08:34:10.167185 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_snapshots.sql [  0.07s]
+08:34:10.215141 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_sources.sql [  0.05s]
+08:34:10.283152 [debug]: Finished parsing dbt_packages\elementary\models/edr/dbt_artifacts/dbt_tests.sql [  0.07s]
+08:34:10.329100 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/dbt_source_freshness_results.sql [  0.05s]
+08:34:10.399879 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/elementary_test_results.sql [  0.07s]
+08:34:10.433247 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/job_run_results.sql [  0.03s]
+08:34:10.478856 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/model_run_results.sql [  0.05s]
+08:34:10.581901 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/seed_run_results.sql [  0.10s]
+08:34:10.614940 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/snapshot_run_results.sql [  0.03s]
+08:34:10.640973 [debug]: Finished parsing dbt_packages\elementary\models/edr/run_results/test_result_rows.sql [  0.03s]
+08:34:10.650072 [debug]: Finished parsing dbt_packages\elementary\models/edr/system/metadata.sql [  0.01s]
+08:34:10.680481 [debug]:    Started building model nodes
+08:34:10.750501 [debug]:   Finished [  0.07s] building model nodes
+08:34:10.751101 [debug]: Finished parsing dbt_packages\elementary\models/edr/system/monitors_runs.sql [  0.10s]
+08:34:10.861372 [debug]:    Started resolving data tests
+08:34:10.861465 [debug]:   Finished [  0.00s] resolving data tests
+08:34:10.871591 [debug]: Finished parsing models/marts/data_test.yml [  0.00s]
+08:34:10.872213 [debug]: Finished parsing models/staging/source.yml [  0.00s]
+08:34:10.917384 [debug]: Finished parsing models/intermediate/int_pl_data.sql [  0.02s]
+08:34:10.941749 [debug]: Finished parsing models/marts/Dim_date.sql [  0.02s]
+08:34:10.957817 [debug]: Finished parsing models/marts/Dim_formation.sql [  0.02s]
+08:34:10.984064 [debug]: Finished parsing models/marts/Dim_opponent.sql [  0.03s]
+08:34:11.006739 [debug]: Finished parsing models/marts/Dim_refree.sql [  0.02s]
+08:34:11.028370 [debug]: Finished parsing models/marts/Dim_team.sql [  0.02s]
+08:34:11.044886 [debug]: Finished parsing models/marts/Dim_venue.sql [  0.02s]
+08:34:11.053813 [debug]: Finished parsing models/marts/Fact_pldata.sql [  0.01s]
+08:34:11.062959 [debug]:    Started building model nodes
+08:34:11.088243 [debug]:   Finished [  0.03s] building model nodes
+08:34:11.088757 [debug]: Finished parsing models/staging/stg_data.sql [  0.04s]
+08:34:11.097477 [debug]:    Started resolving data tests
+08:34:11.108594 [debug]: Finished parsing tests/singulier/test_valeur_null.sql [  0.01s]
+08:34:11.108634 [debug]:   Finished [  0.01s] resolving data tests
+08:34:11.116767 [debug]:    Started typechecking macros
+08:34:14.093458 [debug]:   Finished [  2.98s] typechecking macros
+08:34:14.111819 [info ]: Finished parsing [  7.31s] (46 nodes, 0 skipped, 0 errors)
+08:34:14.117750 [info ]: Cached model count updated: 9 models (estimate)
+08:34:14.117791 [info ]: Cached model count updated: 39 models (accurate)
+08:34:14.118172 [info ]: Started scheduling
+08:34:14.118555 [info ]: Finished scheduling [  0.00s]
+08:34:14.118587 [debug]: Compilation - 0 nodes selected: {}
+08:34:14.118639 [warn ]: [NoNodesForSelectionCriteria (dbt1092)]: The selection criterion '' does not match any enabled nodes
+08:34:14.118666 [warn ]: [NoNodesSelected (dbt1601)]: Nothing to do. Try checking your model configs and model specification args
+08:34:14.118711 [info ]: Started scheduling
+08:34:14.123316 [info ]: Finished scheduling [  0.00s]
+08:34:14.123912 [debug]: Initializing schema store with entry: Frontier(CanonicalFqn { catalog: "workspace", schema: "pl_data", table: "pl_data" }) and interval: None
+08:34:16.069357 [info ]: Started building task graph
+08:34:16.069416 [info ]: Finished building task graph [  0.00s]
+08:34:16.175020 [info ]: Started on-run-start hooks (1 nodes)
+08:34:16.196081 [info ]: Elementary: Runtime data: {"config": {"elementary_full_refresh": true}, "database": "workspace", "dbt_version": "2.0.0", "elementary_version": "0.24.0", "schema": "pl_data"}
+08:34:17.272646 [info ]: Finished on-run-start hooks [  1.10s] (1 nodes, 0 skipped, 0 errors)
+08:34:17.347454 [info ]: Started scheduling
+08:34:17.347667 [info ]: Finished scheduling [  0.00s]
+08:34:17.349173 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' with 2 warnings for target 'dev' [11.1s]
+Processed: 1 hook
+Summary: 1 total | 1 success
+08:34:17.349721 [info ]: Cached model count updated: 39 models (accurate)
+==================== 2026-10-23T08:34:19.803929Z | 033cb64c-bea1-4503-bde8-20e848dd0ba4 ====================
+08:34:19.804194 [info ]: Started loading project
+08:34:19.805499 [info ]: Loading profiles.yml
+08:34:19.832416 [info ]: Finished loading project [  0.03s]
+08:34:20.187770 [info ]: Cached model count updated: 9 models (estimate)
+08:34:20.187809 [info ]: Cached model count updated: 39 models (accurate)
+08:34:20.188020 [info ]: Started scheduling
+08:34:20.188845 [info ]: Finished scheduling [  0.00s]
+08:34:20.188905 [debug]: Compilation - 40 nodes selected: {"model.dashboard_pl.Dim_date", "model.dashboard_pl.Dim_formation", "model.dashboard_pl.Dim_opponent", "model.dashboard_pl.Dim_refree", "model.dashboard_pl.Dim_team", "model.dashboard_pl.Dim_venue", "model.dashboard_pl.Fact_pldata", "model.dashboard_pl.int_pl_data", "model.dashboard_pl.stg_data", "model.elementary.alerts_anomaly_detection", "model.elementary.alerts_dbt_models", "model.elementary.alerts_dbt_source_freshness", "model.elementary.alerts_dbt_tests", "model.elementary.alerts_schema_changes", "model.elementary.anomaly_threshold_sensitivity", "model.elementary.data_monitoring_metrics", "model.elementary.dbt_artifacts_hashes", "model.elementary.dbt_columns", "model.elementary.dbt_exposures", "model.elementary.dbt_groups", "model.elementary.dbt_invocations", "model.elementary.dbt_metrics", "model.elementary.dbt_models", "model.elementary.dbt_run_results", "model.elementary.dbt_seeds", "model.elementary.dbt_snapshots", "model.elementary.dbt_source_freshness_results", "model.elementary.dbt_sources", "model.elementary.dbt_tests", "model.elementary.elementary_test_results", "model.elementary.job_run_results", "model.elementary.metadata", "model.elementary.metrics_anomaly_score", "model.elementary.model_run_results", "model.elementary.monitors_runs", "model.elementary.schema_columns_snapshot", "model.elementary.seed_run_results", "model.elementary.snapshot_run_results", "model.elementary.test_result_rows", "seed.dashboard_pl.pl_data"}
+08:34:22.372480 [info ]: Started building task graph
+08:34:22.373436 [info ]: Finished building task graph [  0.00s]
+08:34:22.587000 [info ]: Started on-run-start hooks (1 nodes)
+08:34:22.629240 [info ]: Elementary: Runtime data: {"config": {"elementary_full_refresh": true}, "database": "workspace", "dbt_version": "2.0.0", "elementary_version": "0.24.0", "schema": "pl_data"}
+08:34:23.796144 [info ]: Finished on-run-start hooks [  1.21s] (1 nodes, 0 skipped, 0 errors)
+08:34:23.796276 [info ]: Started rendering (40 nodes)
+08:34:23.796353 [info ]: Started seed pl_data.pl_data
+08:34:23.796380 [debug]: Started rendering seed pl_data.pl_data
+08:34:23.796435 [info ]: Started model pl_data.test_result_rows
+08:34:23.796451 [debug]: Started rendering model pl_data.test_result_rows
+08:34:23.796484 [info ]: Started model pl_data.seed_run_results
+08:34:23.796495 [debug]: Started rendering model pl_data.seed_run_results
+08:34:23.796516 [info ]: Started model pl_data.schema_columns_snapshot
+08:34:23.796530 [debug]: Started rendering model pl_data.schema_columns_snapshot
+08:34:23.796552 [info ]: Started model pl_data.monitors_runs
+08:34:23.796565 [debug]: Started rendering model pl_data.monitors_runs
+08:34:23.796586 [info ]: Started model pl_data.metadata
+08:34:23.796606 [debug]: Started rendering model pl_data.metadata
+08:34:23.796635 [info ]: Started model pl_data.job_run_results
+08:34:23.796709 [debug]: Started rendering model pl_data.job_run_results
+08:34:23.796903 [info ]: Started model pl_data.dbt_invocations
+08:34:23.796946 [debug]: Started rendering model pl_data.dbt_invocations
+08:34:23.796985 [info ]: Started model pl_data.dbt_artifacts_hashes
+08:34:23.797000 [debug]: Started rendering model pl_data.dbt_artifacts_hashes
+08:34:23.797023 [info ]: Started model pl_data.dbt_tests
+08:34:23.797039 [debug]: Started rendering model pl_data.dbt_tests
+08:34:23.797061 [info ]: Started model pl_data.dbt_seeds
+08:34:23.797073 [debug]: Started rendering model pl_data.dbt_seeds
+08:34:23.797092 [info ]: Started model pl_data.dbt_metrics
+08:34:23.797103 [debug]: Started rendering model pl_data.dbt_metrics
+08:34:23.797122 [info ]: Started model pl_data.dbt_groups
+08:34:23.797133 [debug]: Started rendering model pl_data.dbt_groups
+08:34:23.797152 [info ]: Started model pl_data.dbt_exposures
+08:34:23.797168 [debug]: Started rendering model pl_data.dbt_exposures
+08:34:23.797205 [info ]: Started model pl_data.dbt_columns
+08:34:23.797218 [debug]: Started rendering model pl_data.dbt_columns
+08:34:23.797244 [info ]: Started model pl_data.anomaly_threshold_sensitivity
+08:34:23.797282 [debug]: Started rendering model pl_data.anomaly_threshold_sensitivity
+08:34:23.797308 [info ]: Started model pl_data.metrics_anomaly_score
+08:34:23.797322 [debug]: Started rendering model pl_data.metrics_anomaly_score
+08:34:23.797345 [info ]: Started model pl_data.data_monitoring_metrics
+08:34:23.797362 [debug]: Started rendering model pl_data.data_monitoring_metrics
+08:34:23.797385 [info ]: Started model pl_data.alerts_schema_changes
+08:34:23.797401 [debug]: Started rendering model pl_data.alerts_schema_changes
+08:34:23.797425 [info ]: Started model pl_data.alerts_dbt_tests
+08:34:23.797439 [debug]: Started rendering model pl_data.alerts_dbt_tests
+08:34:23.797463 [info ]: Started model pl_data.alerts_dbt_source_freshness
+08:34:23.797477 [debug]: Started rendering model pl_data.alerts_dbt_source_freshness
+08:34:23.797502 [info ]: Started model pl_data.dbt_sources
+08:34:23.797518 [debug]: Started rendering model pl_data.dbt_sources
+08:34:23.797557 [info ]: Started model pl_data.dbt_source_freshness_results
+08:34:23.797571 [debug]: Started rendering model pl_data.dbt_source_freshness_results
+08:34:23.797591 [info ]: Started model pl_data.alerts_dbt_models
+08:34:23.797606 [debug]: Started rendering model pl_data.alerts_dbt_models
+08:34:23.797631 [info ]: Started model pl_data.snapshot_run_results
+08:34:23.797645 [debug]: Started rendering model pl_data.snapshot_run_results
+08:34:23.797677 [info ]: Started model pl_data.model_run_results
+08:34:23.797697 [debug]: Started rendering model pl_data.model_run_results
+08:34:23.797717 [info ]: Started model pl_data.dbt_snapshots
+08:34:23.797735 [debug]: Started rendering model pl_data.dbt_snapshots
+08:34:23.797802 [info ]: Started model pl_data.dbt_run_results
+08:34:23.797829 [debug]: Started rendering model pl_data.dbt_run_results
+08:34:23.797861 [info ]: Started model pl_data.dbt_models
+08:34:23.797882 [debug]: Started rendering model pl_data.dbt_models
+08:34:23.797923 [info ]: Started model pl_data.alerts_anomaly_detection
+08:34:23.797941 [debug]: Started rendering model pl_data.alerts_anomaly_detection
+08:34:23.797966 [info ]: Started model pl_data.elementary_test_results
+08:34:23.797982 [debug]: Started rendering model pl_data.elementary_test_results
+08:34:23.798005 [info ]: Started model pl_data.Fact_pldata
+08:34:23.798020 [debug]: Started rendering model pl_data.Fact_pldata
+08:34:23.798044 [info ]: Started model pl_data.Dim_venue
+08:34:23.798059 [debug]: Started rendering model pl_data.Dim_venue
+08:34:23.798094 [info ]: Started model pl_data.Dim_team
+08:34:23.798112 [debug]: Started rendering model pl_data.Dim_team
+08:34:23.798135 [info ]: Started model pl_data.Dim_refree
+08:34:23.798151 [debug]: Started rendering model pl_data.Dim_refree
+08:34:23.798175 [info ]: Started model pl_data.Dim_opponent
+08:34:23.798191 [debug]: Started rendering model pl_data.Dim_opponent
+08:34:23.798215 [info ]: Started model pl_data.Dim_formation
+08:34:23.798233 [debug]: Started rendering model pl_data.Dim_formation
+08:34:23.798270 [info ]: Started model pl_data.stg_data
+08:34:23.798289 [debug]: Started rendering model pl_data.stg_data
+08:34:23.798313 [info ]: Started model pl_data.Dim_date
+08:34:23.798330 [debug]: Started rendering model pl_data.Dim_date
+08:34:23.798534 [debug]: Finished rendering [  0.00s] seed pl_data.pl_data [success]
+08:34:23.798564 [info ]:  Succeeded seed  pl_data.pl_data (table) [1 of 39 in 0.00s]
+08:34:24.096099 [debug]: Compiled SQL for node model.elementary.monitors_runs at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\system\monitors_runs.sql
+08:34:24.096930 [debug]: Compiled SQL for node model.elementary.schema_columns_snapshot at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\data_monitoring\schema_changes\schema_columns_snapshot.sql
+08:34:24.115792 [debug]: Compiled SQL for node model.elementary.metadata at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\system\metadata.sql
+08:34:24.120847 [debug]: Finished rendering [  0.32s] model pl_data.monitors_runs [success]
+08:34:24.120978 [info ]: Started analyzing (39 nodes)
+08:34:24.120996 [debug]: Started analyzing model pl_data.monitors_runs
+08:34:24.154286 [debug]: Finished rendering [  0.36s] model pl_data.schema_columns_snapshot [success]
+08:34:24.154385 [debug]: Started analyzing model pl_data.schema_columns_snapshot
+08:34:24.155085 [debug]: Finished rendering [  0.36s] model pl_data.metadata [success]
+08:34:24.155157 [debug]: Started analyzing model pl_data.metadata
+08:34:24.175540 [debug]: Finished analyzing [  0.02s] model pl_data.metadata [success]
+08:34:24.175618 [info ]:  Succeeded model pl_data.metadata (table) [6 of 39 in 0.38s]
+08:34:24.192736 [debug]: Finished analyzing [  0.04s] model pl_data.schema_columns_snapshot [success]
+08:34:24.192791 [info ]:  Succeeded model pl_data.schema_columns_snapshot (incremental) [4 of 39 in 0.40s]
+08:34:24.207772 [debug]: Finished analyzing [  0.09s] model pl_data.monitors_runs [success]
+08:34:24.207807 [info ]:  Succeeded model pl_data.monitors_runs (view) [5 of 39 in 0.41s]
+08:34:24.603107 [debug]: Compiled SQL for node model.elementary.test_result_rows at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\run_results\test_result_rows.sql
+08:34:24.616266 [debug]: Finished rendering [  0.82s] model pl_data.test_result_rows [success]
+08:34:24.616366 [debug]: Started analyzing model pl_data.test_result_rows
+08:34:24.629152 [debug]: Finished analyzing [  0.01s] model pl_data.test_result_rows [success]
+08:34:24.629185 [info ]:  Succeeded model pl_data.test_result_rows (incremental) [2 of 39 in 0.83s]
+08:34:24.649500 [debug]: Compiled SQL for node model.elementary.seed_run_results at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\run_results\seed_run_results.sql
+08:34:24.651603 [debug]: Compiled SQL for node model.elementary.job_run_results at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\run_results\job_run_results.sql
+08:34:24.667238 [debug]: Finished rendering [  0.87s] model pl_data.seed_run_results [success]
+08:34:24.667306 [debug]: Started analyzing model pl_data.seed_run_results
+08:34:24.667998 [debug]: Finished rendering [  0.87s] model pl_data.job_run_results [success]
+08:34:24.668059 [debug]: Started analyzing model pl_data.job_run_results
+08:34:24.700324 [debug]: Finished analyzing [  0.03s] model pl_data.seed_run_results [success]
+08:34:24.700357 [info ]:  Succeeded model pl_data.seed_run_results (view) [3 of 39 in 0.90s]
+08:34:24.848610 [debug]: Compiled SQL for node model.elementary.dbt_artifacts_hashes at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\dbt_artifacts\dbt_artifacts_hashes.sql
+08:34:24.884593 [debug]: Finished rendering [  1.09s] model pl_data.dbt_artifacts_hashes [success]
+08:34:24.884669 [debug]: Started analyzing model pl_data.dbt_artifacts_hashes
+08:34:24.898157 [debug]: Finished analyzing [  0.01s] model pl_data.dbt_artifacts_hashes [success]
+08:34:24.898187 [info ]:  Succeeded model pl_data.dbt_artifacts_hashes (view) [9 of 39 in 1.10s]
+08:34:25.052287 [debug]: Compiled SQL for node model.elementary.dbt_invocations at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\dbt_artifacts\dbt_invocations.sql
+08:34:25.053575 [debug]: Finished rendering [  1.26s] model pl_data.dbt_invocations [success]
+08:34:25.053644 [debug]: Started analyzing model pl_data.dbt_invocations
+08:34:25.063178 [debug]: Finished analyzing [  0.01s] model pl_data.dbt_invocations [success]
+08:34:25.063235 [info ]:  Succeeded model pl_data.dbt_invocations (incremental) [8 of 39 in 1.27s]
+08:34:25.069283 [debug]: Compiled SQL for node model.elementary.dbt_seeds at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\dbt_artifacts\dbt_seeds.sql
+08:34:25.087806 [debug]: Finished rendering [  1.29s] model pl_data.dbt_seeds [success]
+08:34:25.087873 [debug]: Started analyzing model pl_data.dbt_seeds
+08:34:25.098672 [debug]: Finished analyzing [  0.01s] model pl_data.dbt_seeds [success]
+08:34:25.098710 [info ]:  Succeeded model pl_data.dbt_seeds (incremental) [11 of 39 in 1.30s]
+08:34:25.275457 [debug]: Compiled SQL for node model.elementary.dbt_tests at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\dbt_artifacts\dbt_tests.sql
+08:34:25.281005 [debug]: Finished rendering [  1.48s] model pl_data.dbt_tests [success]
+08:34:25.281075 [debug]: Started analyzing model pl_data.dbt_tests
+08:34:25.283349 [debug]: Finished analyzing [  0.00s] model pl_data.dbt_tests [success]
+08:34:25.283389 [info ]:  Succeeded model pl_data.dbt_tests (incremental) [10 of 39 in 1.48s]
+08:34:25.287267 [debug]: Compiled SQL for node model.elementary.dbt_metrics at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\dbt_artifacts\dbt_metrics.sql
+08:34:25.293324 [debug]: Finished rendering [  1.50s] model pl_data.dbt_metrics [success]
+08:34:25.293408 [debug]: Started analyzing model pl_data.dbt_metrics
+08:34:25.295138 [debug]: Finished analyzing [  0.00s] model pl_data.dbt_metrics [success]
+08:34:25.295170 [info ]:  Succeeded model pl_data.dbt_metrics (incremental) [12 of 39 in 1.50s]
+08:34:25.315017 [debug]: Compiled SQL for node model.elementary.dbt_groups at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\dbt_artifacts\dbt_groups.sql
+08:34:25.317481 [debug]: Compiled SQL for node model.elementary.anomaly_threshold_sensitivity at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\data_monitoring\anomaly_detection\anomaly_threshold_sensitivity.sql
+08:34:25.317930 [debug]: Finished rendering [  1.52s] model pl_data.dbt_groups [success]
+08:34:25.317976 [debug]: Started analyzing model pl_data.dbt_groups
+08:34:25.324568 [debug]: Finished rendering [  1.53s] model pl_data.anomaly_threshold_sensitivity [success]
+08:34:25.324639 [debug]: Started analyzing model pl_data.anomaly_threshold_sensitivity
+08:34:25.325319 [debug]: Finished analyzing [  0.01s] model pl_data.dbt_groups [success]
+08:34:25.325351 [info ]:  Succeeded model pl_data.dbt_groups (incremental) [13 of 39 in 1.53s]
+08:34:25.343149 [debug]: Compiled SQL for node model.elementary.dbt_exposures at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\dbt_artifacts\dbt_exposures.sql
+08:34:25.346729 [debug]: Finished rendering [  1.55s] model pl_data.dbt_exposures [success]
+08:34:25.346777 [debug]: Started analyzing model pl_data.dbt_exposures
+08:34:25.347990 [debug]: Finished analyzing [  0.00s] model pl_data.dbt_exposures [success]
+08:34:25.348039 [info ]:  Succeeded model pl_data.dbt_exposures (incremental) [14 of 39 in 1.55s]
+08:34:25.392283 [debug]: Compiled SQL for node model.elementary.alerts_schema_changes at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\alerts\alerts_schema_changes.sql
+08:34:25.398112 [debug]: Compiled SQL for node model.elementary.dbt_columns at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\dbt_artifacts\dbt_columns.sql
+08:34:25.398624 [debug]: Finished rendering [  1.60s] model pl_data.alerts_schema_changes [success]
+08:34:25.398689 [debug]: Started analyzing model pl_data.alerts_schema_changes
+08:34:25.405535 [debug]: Compiled SQL for node model.elementary.metrics_anomaly_score at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\data_monitoring\anomaly_detection\metrics_anomaly_score.sql
+08:34:25.407578 [debug]: Finished rendering [  1.61s] model pl_data.dbt_columns [success]
+08:34:25.407624 [debug]: Started analyzing model pl_data.dbt_columns
+08:34:25.408491 [debug]: Finished analyzing [  0.00s] model pl_data.dbt_columns [success]
+08:34:25.408520 [info ]:  Succeeded model pl_data.dbt_columns (incremental) [15 of 39 in 1.61s]
+08:34:25.408578 [debug]: Finished rendering [  1.61s] model pl_data.metrics_anomaly_score [success]
+08:34:25.408605 [debug]: Started analyzing model pl_data.metrics_anomaly_score
+08:34:25.410729 [debug]: Compiled SQL for node model.elementary.data_monitoring_metrics at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\data_monitoring\data_monitoring\data_monitoring_metrics.sql
+08:34:25.476719 [debug]: Compiled SQL for node model.elementary.alerts_dbt_tests at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\alerts\alerts_dbt_tests.sql
+08:34:25.507173 [debug]: Compiled SQL for node model.elementary.dbt_source_freshness_results at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\run_results\dbt_source_freshness_results.sql
+08:34:25.515644 [debug]: Finished analyzing [  0.12s] model pl_data.alerts_schema_changes [success]
+08:34:25.515687 [info ]:  Succeeded model pl_data.alerts_schema_changes (view) [19 of 39 in 1.72s]
+08:34:25.516409 [debug]: Finished rendering [  1.72s] model pl_data.data_monitoring_metrics [success]
+08:34:25.516445 [debug]: Started analyzing model pl_data.data_monitoring_metrics
+08:34:25.519847 [debug]: Compiled SQL for node model.elementary.snapshot_run_results at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\run_results\snapshot_run_results.sql
+08:34:25.527313 [debug]: Finished analyzing [  0.20s] model pl_data.anomaly_threshold_sensitivity [success]
+08:34:25.527347 [info ]:  Succeeded model pl_data.anomaly_threshold_sensitivity (view) [16 of 39 in 1.73s]
+08:34:25.534082 [debug]: Finished rendering [  1.74s] model pl_data.alerts_dbt_tests [success]
+08:34:25.534153 [debug]: Started analyzing model pl_data.alerts_dbt_tests
+08:34:25.534206 [debug]: Finished rendering [  1.74s] model pl_data.dbt_source_freshness_results [success]
+08:34:25.534233 [debug]: Started analyzing model pl_data.dbt_source_freshness_results
+08:34:25.536175 [debug]: Compiled SQL for node model.elementary.model_run_results at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\run_results\model_run_results.sql
+08:34:25.536879 [debug]: Finished analyzing [  0.00s] model pl_data.alerts_dbt_tests [success]
+08:34:25.536911 [info ]:  Succeeded model pl_data.alerts_dbt_tests (view) [20 of 39 in 1.74s]
+08:34:25.559879 [debug]: Finished analyzing [  0.04s] model pl_data.data_monitoring_metrics [success]
+08:34:25.559917 [info ]:  Succeeded model pl_data.data_monitoring_metrics (incremental) [18 of 39 in 1.76s]
+08:34:25.560002 [debug]: Finished rendering [  1.76s] model pl_data.snapshot_run_results [success]
+08:34:25.560033 [debug]: Started analyzing model pl_data.snapshot_run_results
+08:34:25.565871 [debug]: Finished analyzing [  0.03s] model pl_data.dbt_source_freshness_results [success]
+08:34:25.566081 [info ]:  Succeeded model pl_data.dbt_source_freshness_results (incremental) [23 of 39 in 1.77s]
+08:34:25.566834 [debug]: Finished rendering [  1.77s] model pl_data.model_run_results [success]
+08:34:25.566899 [debug]: Started analyzing model pl_data.model_run_results
+08:34:25.632242 [debug]: Compiled SQL for node model.elementary.dbt_sources at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\dbt_artifacts\dbt_sources.sql
+08:34:25.765723 [debug]: Finished analyzing [  0.20s] model pl_data.model_run_results [success]
+08:34:25.765798 [info ]:  Succeeded model pl_data.model_run_results (view) [26 of 39 in 1.97s]
+08:34:25.766410 [debug]: Finished rendering [  1.97s] model pl_data.dbt_sources [success]
+08:34:25.766454 [debug]: Started analyzing model pl_data.dbt_sources
+08:34:25.767855 [debug]: Finished analyzing [  0.00s] model pl_data.dbt_sources [success]
+08:34:25.767887 [info ]:  Succeeded model pl_data.dbt_sources (incremental) [22 of 39 in 1.97s]
+08:34:25.780585 [debug]: Finished analyzing [  0.22s] model pl_data.snapshot_run_results [success]
+08:34:25.780622 [info ]:  Succeeded model pl_data.snapshot_run_results (view) [25 of 39 in 1.98s]
+08:34:25.841117 [debug]: Compiled SQL for node model.elementary.dbt_snapshots at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\dbt_artifacts\dbt_snapshots.sql
+08:34:25.856284 [debug]: Finished rendering [  2.06s] model pl_data.dbt_snapshots [success]
+08:34:25.856351 [debug]: Started analyzing model pl_data.dbt_snapshots
+08:34:25.857366 [debug]: Finished analyzing [  0.00s] model pl_data.dbt_snapshots [success]
+08:34:25.857395 [info ]:  Succeeded model pl_data.dbt_snapshots (incremental) [27 of 39 in 2.06s]
+08:34:25.890650 [debug]: Finished analyzing [  0.48s] model pl_data.metrics_anomaly_score [success]
+08:34:25.890711 [info ]:  Succeeded model pl_data.metrics_anomaly_score (view) [17 of 39 in 2.09s]
+08:34:25.911300 [debug]: Compiled SQL for node model.elementary.dbt_run_results at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\dbt_artifacts\dbt_run_results.sql
+08:34:25.924363 [debug]: Finished rendering [  2.13s] model pl_data.dbt_run_results [success]
+08:34:25.924658 [debug]: Started analyzing model pl_data.dbt_run_results
+08:34:25.927842 [debug]: Finished analyzing [  0.00s] model pl_data.dbt_run_results [success]
+08:34:25.927894 [info ]:  Succeeded model pl_data.dbt_run_results (incremental) [28 of 39 in 2.13s]
+08:34:25.994430 [debug]: Compiled SQL for node model.elementary.dbt_models at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\dbt_artifacts\dbt_models.sql
+08:34:25.999215 [debug]: Finished rendering [  2.20s] model pl_data.dbt_models [success]
+08:34:25.999281 [debug]: Started analyzing model pl_data.dbt_models
+08:34:26.000455 [debug]: Finished analyzing [  0.00s] model pl_data.dbt_models [success]
+08:34:26.000505 [info ]:  Succeeded model pl_data.dbt_models (incremental) [29 of 39 in 2.20s]
+08:34:26.259802 [debug]: Compiled SQL for node model.elementary.elementary_test_results at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\run_results\elementary_test_results.sql
+08:34:26.268741 [debug]: Finished rendering [  2.47s] model pl_data.elementary_test_results [success]
+08:34:26.268818 [debug]: Started analyzing model pl_data.elementary_test_results
+08:34:26.275756 [debug]: Finished analyzing [  0.01s] model pl_data.elementary_test_results [success]
+08:34:26.275799 [info ]:  Succeeded model pl_data.elementary_test_results (incremental) [31 of 39 in 2.48s]
+08:34:26.310391 [debug]: Compiled SQL for node model.dashboard_pl.Fact_pldata at target\.lsp\compiled\dashboard_pl\models\marts\Fact_pldata.sql
+08:34:26.321447 [debug]: Finished rendering [  2.52s] model pl_data.Fact_pldata [success]
+08:34:26.325186 [debug]: Started analyzing model pl_data.Fact_pldata
+08:34:26.361180 [debug]: Compiled SQL for node model.dashboard_pl.Dim_venue at target\.lsp\compiled\dashboard_pl\models\marts\Dim_venue.sql
+08:34:26.365053 [debug]: Compiled SQL for node model.dashboard_pl.Dim_team at target\.lsp\compiled\dashboard_pl\models\marts\Dim_team.sql
+08:34:26.368176 [debug]: Compiled SQL for node model.dashboard_pl.Dim_refree at target\.lsp\compiled\dashboard_pl\models\marts\Dim_refree.sql
+08:34:26.370998 [debug]: Finished rendering [  2.57s] model pl_data.Dim_venue [success]
+08:34:26.371054 [debug]: Started analyzing model pl_data.Dim_venue
+08:34:26.371112 [debug]: Started analyzing model pl_data.Dim_team
+08:34:26.373902 [debug]: Compiled SQL for node model.dashboard_pl.Dim_opponent at target\.lsp\compiled\dashboard_pl\models\marts\Dim_opponent.sql
+08:34:26.373924 [debug]: Finished rendering [  2.58s] model pl_data.Dim_team [success]
+08:34:26.378320 [debug]: Compiled SQL for node model.dashboard_pl.Dim_formation at target\.lsp\compiled\dashboard_pl\models\marts\Dim_formation.sql
+08:34:26.419445 [debug]: Finished rendering [  2.62s] model pl_data.Dim_refree [success]
+08:34:26.419533 [debug]: Started analyzing model pl_data.Dim_refree
+08:34:26.423203 [debug]: Finished rendering [  2.63s] model pl_data.Dim_opponent [success]
+08:34:26.423320 [debug]: Started analyzing model pl_data.Dim_opponent
+08:34:26.440453 [debug]: Compiled SQL for node model.dashboard_pl.stg_data at target\.lsp\compiled\dashboard_pl\models\staging\stg_data.sql
+08:34:26.448123 [debug]: create_debug_span(...).entered() took 77.7µs
+08:34:26.508383 [debug]: Finished analyzing [  0.09s] model pl_data.Dim_refree [success]
+08:34:26.508441 [info ]:  Succeeded model pl_data.Dim_refree (table) [35 of 39 in 2.71s]
+08:34:26.510362 [debug]: Finished analyzing [  0.09s] model pl_data.Dim_opponent [success]
+08:34:26.510396 [info ]:  Succeeded model pl_data.Dim_opponent (table) [36 of 39 in 2.71s]
+08:34:26.511512 [debug]: Finished rendering [  2.71s] model pl_data.Dim_formation [success]
+08:34:26.511584 [debug]: Started analyzing model pl_data.Dim_formation
+08:34:26.513353 [debug]: Finished rendering [  2.72s] model pl_data.stg_data [success]
+08:34:26.513411 [debug]: Started analyzing model pl_data.stg_data
+08:34:26.513476 [info ]: Started model pl_data.int_pl_data
+08:34:26.513518 [debug]: Started rendering model pl_data.int_pl_data
+08:34:26.515590 [debug]: Finished analyzing [  0.00s] model pl_data.Dim_formation [success]
+08:34:26.515640 [info ]:  Succeeded model pl_data.Dim_formation (table) [37 of 39 in 2.72s]
+08:34:26.596715 [debug]: Finished analyzing [  0.27s] model pl_data.Fact_pldata [success]
+08:34:26.596783 [info ]:  Succeeded model pl_data.Fact_pldata (table) [32 of 39 in 2.79s]
+08:34:26.597282 [debug]: Finished analyzing [  0.23s] model pl_data.Dim_team [success]
+08:34:26.597312 [info ]:  Succeeded model pl_data.Dim_team (table) [34 of 39 in 2.80s]
+08:34:26.612796 [debug]: Finished analyzing [  0.24s] model pl_data.Dim_venue [success]
+08:34:26.612834 [info ]:  Succeeded model pl_data.Dim_venue (table) [33 of 39 in 2.81s]
+08:34:26.613858 [debug]: Finished analyzing [  0.10s] model pl_data.stg_data [success]
+08:34:26.613893 [info ]:  Succeeded model pl_data.stg_data (ephemeral) [2.81s]
+08:34:26.964770 [debug]: stmt.execute() (submit+wait_for_completion, returns reader) took 399.9573ms
+08:34:26.964856 [debug]: reader.schema() took 1.5µs
+08:34:27.056332 [debug]: Compiled SQL for node model.elementary.alerts_dbt_source_freshness at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\alerts\alerts_dbt_source_freshness.sql
+08:34:27.085577 [debug]: Finished rendering [  3.29s] model pl_data.alerts_dbt_source_freshness [success]
+08:34:27.085823 [debug]: Started analyzing model pl_data.alerts_dbt_source_freshness
+08:34:27.092966 [debug]: Compiled SQL for node model.dashboard_pl.int_pl_data at target\.lsp\compiled\dashboard_pl\models\intermediate\int_pl_data.sql
+08:34:27.100479 [debug]: Finished rendering [  0.59s] model pl_data.int_pl_data [success]
+08:34:27.100645 [debug]: Started analyzing model pl_data.int_pl_data
+08:34:27.172681 [debug]: Compiled SQL for node model.elementary.alerts_dbt_models at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\alerts\alerts_dbt_models.sql
+08:34:27.183667 [debug]: Finished analyzing [  0.10s] model pl_data.alerts_dbt_source_freshness [success]
+08:34:27.183704 [info ]:  Succeeded model pl_data.alerts_dbt_source_freshness (view) [21 of 39 in 3.38s]
+08:34:27.184097 [debug]: Finished rendering [  3.39s] model pl_data.alerts_dbt_models [success]
+08:34:27.184133 [debug]: Started analyzing model pl_data.alerts_dbt_models
+08:34:27.195015 [debug]: Finished analyzing [  0.01s] model pl_data.alerts_dbt_models [success]
+08:34:27.195047 [info ]:  Succeeded model pl_data.alerts_dbt_models (view) [24 of 39 in 3.40s]
+08:34:27.199187 [debug]: Compiled SQL for node model.elementary.alerts_anomaly_detection at target\.lsp\compiled\elementary\dbt_packages\elementary\models\edr\alerts\alerts_anomaly_detection.sql
+08:34:27.200688 [debug]: Finished rendering [  3.40s] model pl_data.alerts_anomaly_detection [success]
+08:34:27.200764 [debug]: Started analyzing model pl_data.alerts_anomaly_detection
+08:34:27.202168 [debug]: Finished analyzing [  0.00s] model pl_data.alerts_anomaly_detection [success]
+08:34:27.202203 [info ]:  Succeeded model pl_data.alerts_anomaly_detection (view) [30 of 39 in 3.40s]
+08:34:27.216748 [debug]: Finished analyzing [  0.12s] model pl_data.int_pl_data [success]
+08:34:27.216784 [info ]:  Succeeded model pl_data.int_pl_data (view) [39 of 39 in 0.70s]
+08:34:27.247136 [debug]: batch-consume loop (for res in reader) took 282.2487ms
+08:34:27.367747 [debug]: do_execute(conn) (closure: stmt.execute + schema + batch loop) took 919.5537ms
+08:34:27.368134 [debug]: concat_batches + normalize_result_column_names took 171.9µs
+08:34:27.368203 [debug]: record_current_span_status_from_attrs took 35.4µs
+08:34:27.368229 [debug]: Query executed on node model.dashboard_pl.Dim_date:
+/* {"app": "dbt", "connection_name": "", "dbt_version": "2.0.0", "invocation_id": "033cb64c-bea1-4503-bde8-20e848dd0ba4", "profile_name": "dashboard_pl", "target_name": "dev"} */
+select timestampdiff(day, date_trunc('day', '2025-01-01'), date_trunc('day', '2026-12-31'))
+08:34:27.368255 [debug]: drop(query_span_guard) (span exit/export) took 37µs
+08:34:27.401122 [debug]: Compiled SQL for node model.dashboard_pl.Dim_date at target\.lsp\compiled\dashboard_pl\models\marts\Dim_date.sql
+08:34:27.431876 [debug]: Finished rendering [  3.63s] model pl_data.Dim_date [success]
+08:34:27.431931 [info ]: Finished rendering [  3.64s] (40 nodes, 0 skipped, 0 errors)
+08:34:27.431965 [debug]: Started analyzing model pl_data.Dim_date
+08:34:27.730293 [debug]: Finished analyzing [  0.30s] model pl_data.Dim_date [success]
+08:34:27.730373 [info ]:  Succeeded model pl_data.Dim_date (table) [38 of 39 in 3.93s]
+08:34:27.831564 [debug]: Finished analyzing [  3.16s] model pl_data.job_run_results [success]
+08:34:27.831626 [info ]: Finished analyzing [  3.71s] (39 nodes, 0 skipped, 0 errors)
+08:34:27.831648 [info ]:  Succeeded model pl_data.job_run_results (view) [7 of 39 in 4.03s]
+08:34:27.984896 [info ]: Started scheduling
+08:34:27.987689 [info ]: Finished scheduling [  0.00s]
+08:34:27.992189 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' successfully for target 'dev' [8.2s]
+Processed: 1 hook | 39 models | 1 seed
+Summary: 41 total | 41 success
+08:34:28.005509 [info ]: Cached model count updated: 39 models (accurate)

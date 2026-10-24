@@ -1,0 +1,825 @@
+from datetime import date, datetime, timedelta
+from typing import Any, Dict, List
+
+import dateutil.parser
+from data_generator import DATE_FORMAT, generate_dates
+from dbt_project import DbtProject
+from parametrization import Parametrization
+
+TIMESTAMP_COLUMN = "updated_at"
+DBT_TEST_NAME = "elementary.column_anomalies"
+DBT_TEST_ARGS = {
+    "timestamp_column": TIMESTAMP_COLUMN,
+    "column_anomalies": ["null_count"],
+}
+
+
+def test_anomalyless_column_anomalies(test_id: str, dbt_project: DbtProject):
+    utc_today = datetime.utcnow().date()
+    data: List[Dict[str, Any]] = [
+        {
+            TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT),
+            "superhero": superhero,
+        }
+        for cur_date in generate_dates(base_date=utc_today - timedelta(1))
+        for superhero in ["Superman", "Batman"]
+    ]
+    test_result = dbt_project.test(
+        test_id, DBT_TEST_NAME, DBT_TEST_ARGS, data=data, test_column="superhero"
+    )
+    assert test_result["status"] == "pass"
+
+
+def test_anomalyless_no_timestamp_column_anomalies(
+    test_id: str, dbt_project: DbtProject
+):
+    utc_today = datetime.utcnow().date()
+    data: List[Dict[str, Any]] = [
+        {
+            TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT),
+            "superhero": superhero,
+        }
+        for cur_date in generate_dates(base_date=utc_today - timedelta(1))
+        for superhero in ["Superman", "Batman"]
+    ]
+    test_args = DBT_TEST_ARGS.copy()
+    test_args.pop("timestamp_column")
+    test_result = dbt_project.test(
+        test_id, DBT_TEST_NAME, test_args, data=data, test_column="superhero"
+    )
+    assert test_result["status"] == "pass"
+
+
+def test_anomalous_column_anomalies(test_id: str, dbt_project: DbtProject):
+    utc_today = datetime.utcnow().date()
+    test_date, *training_dates = generate_dates(base_date=utc_today - timedelta(1))
+
+    data: List[Dict[str, Any]] = [
+        {TIMESTAMP_COLUMN: test_date.strftime(DATE_FORMAT), "superhero": None}
+        for _ in range(3)
+    ]
+    data += [
+        {
+            TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT),
+            "superhero": superhero,
+        }
+        for cur_date in training_dates
+        for superhero in ["Superman", "Batman"]
+    ]
+
+    test_result = dbt_project.test(
+        test_id, DBT_TEST_NAME, DBT_TEST_ARGS, data=data, test_column="superhero"
+    )
+    assert test_result["status"] == "fail"
+
+
+def test_column_anomalies_with_where_parameter(test_id: str, dbt_project: DbtProject):
+    utc_today = datetime.utcnow().date()
+    test_date, *training_dates = generate_dates(base_date=utc_today - timedelta(1))
+
+    data: List[Dict[str, Any]] = [
+        {
+            TIMESTAMP_COLUMN: test_date.strftime(DATE_FORMAT),
+            "universe": universe,
+            "superhero": superhero,
+        }
+        for universe, superhero in [
+            ("DC", None),
+            ("DC", None),
+            ("DC", None),
+            ("Marvel", "Spiderman"),
+        ]
+    ] + [
+        {
+            TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT),
+            "universe": universe,
+            "superhero": superhero,
+        }
+        for cur_date in training_dates
+        for universe, superhero in [
+            ("DC", "Superman"),
+            ("DC", "Batman"),
+            ("DC", None),
+            ("Marvel", "Spiderman"),
+        ]
+    ]
+
+    test_result = dbt_project.test(
+        test_id, DBT_TEST_NAME, DBT_TEST_ARGS, data=data, test_column="superhero"
+    )
+    assert test_result["status"] == "fail"
+
+    test_result = dbt_project.test(
+        test_id,
+        DBT_TEST_NAME,
+        DBT_TEST_ARGS,
+        test_column="superhero",
+        test_vars={"force_metrics_backfill": True},
+        test_config={"where": "universe = 'Marvel'"},
+    )
+    assert test_result["status"] == "pass"
+
+    test_result = dbt_project.test(
+        test_id,
+        DBT_TEST_NAME,
+        DBT_TEST_ARGS,
+        test_column="superhero",
+        test_vars={"force_metrics_backfill": True},
+        test_config={"where": "universe = 'DC'"},
+    )
+    assert test_result["status"] == "fail"
+
+
+def test_column_anomalies_with_timestamp_as_sql_expression(
+    test_id: str, dbt_project: DbtProject
+):
+    utc_today = datetime.utcnow().date()
+    data: List[Dict[str, Any]] = [
+        {
+            TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT),
+            "superhero": superhero,
+        }
+        for cur_date in generate_dates(base_date=utc_today - timedelta(1))
+        for superhero in ["Superman", "Batman"]
+    ]
+    test_args = {
+        "timestamp_column": "case when updated_at is not null then updated_at else updated_at end",
+        "column_anomalies": ["null_count"],
+    }
+
+    test_result = dbt_project.test(
+        test_id, DBT_TEST_NAME, test_args, data=data, test_column="superhero"
+    )
+    assert test_result["status"] == "pass"
+
+
+@Parametrization.autodetect_parameters()
+@Parametrization.case(
+    name="true_positive",
+    expected_result="fail",
+    drop_failure_percent_threshold=5,
+    metric_value=10,
+)
+@Parametrization.case(
+    name="false_positive",
+    expected_result="fail",
+    drop_failure_percent_threshold=None,
+    metric_value=1,
+)
+@Parametrization.case(
+    name="true_negative",
+    expected_result="pass",
+    drop_failure_percent_threshold=5,
+    metric_value=1,
+)
+def test_volume_anomaly_static_data_drop(
+    test_id: str,
+    dbt_project: DbtProject,
+    expected_result: str,
+    drop_failure_percent_threshold: int,
+    metric_value: int,
+):
+    now = datetime.utcnow()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT), "superhero": "Batman"}
+        for cur_date in generate_dates(base_date=now, step=timedelta(days=1))
+        if cur_date < now - timedelta(days=1)
+    ] * 50
+    data += [
+        {
+            TIMESTAMP_COLUMN: (now - timedelta(days=1)).strftime(DATE_FORMAT),
+            "superhero": "Batman",
+        }
+    ] * 50
+    data += [
+        {
+            TIMESTAMP_COLUMN: (now - timedelta(days=1)).strftime(DATE_FORMAT),
+            "superhero": None,
+        }
+    ] * metric_value
+
+    # 50 new rows every day with 0 nulls
+    # 50 new rows in the last day with 0 nulls
+    # <mertic_value> new rows in the last day with nulls
+
+    test_args = {
+        **DBT_TEST_ARGS,
+        "time_bucket": {"period": "day", "count": 1},
+        "column_anomalies": ["not_null_percent"],
+        "ignore_small_changes": {
+            "drop_failure_percent_threshold": drop_failure_percent_threshold
+        },
+    }
+    test_result = dbt_project.test(
+        test_id, DBT_TEST_NAME, test_args, data=data, test_column="superhero"
+    )
+    assert test_result["status"] == expected_result
+
+
+@Parametrization.autodetect_parameters()
+@Parametrization.case(
+    name="detected",
+    expected_result="fail",
+    min_value=None,
+)
+@Parametrization.case(
+    name="suppressed",
+    expected_result="pass",
+    min_value=5,
+)
+def test_col_anom_min_value(
+    test_id: str,
+    dbt_project: DbtProject,
+    expected_result: str,
+    min_value,
+):
+    now = datetime.utcnow()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT), "superhero": "Batman"}
+        for cur_date in generate_dates(base_date=now, step=timedelta(days=1))
+        if cur_date < now - timedelta(days=1)
+    ] * 50
+    data += [
+        {
+            TIMESTAMP_COLUMN: (now - timedelta(days=1)).strftime(DATE_FORMAT),
+            "superhero": "Batman",
+        }
+    ] * 47
+    data += [
+        {
+            TIMESTAMP_COLUMN: (now - timedelta(days=1)).strftime(DATE_FORMAT),
+            "superhero": None,
+        }
+    ] * 3
+
+    # Training: 50 rows/day, 0 nulls -> null_count = 0
+    # Detection: 50 rows, 3 nulls -> null_count = 3
+    # Without min_value: null_count 3 vs training avg 0 -> anomaly detected (fail)
+    # With min_value=5: null_count 3 < 5 -> anomaly suppressed (pass)
+
+    test_args = {
+        **DBT_TEST_ARGS,
+        "time_bucket": {"period": "day", "count": 1},
+        "column_anomalies": ["null_count"],
+    }
+    if min_value is not None:
+        test_args["min_value"] = min_value
+    test_result = dbt_project.test(
+        test_id, DBT_TEST_NAME, test_args, data=data, test_column="superhero"
+    )
+    assert test_result["status"] == expected_result
+
+
+def test_anomalyless_column_anomalies_group(test_id: str, dbt_project: DbtProject):
+    utc_today = datetime.utcnow().date()
+    data: List[Dict[str, Any]] = [
+        {
+            TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT),
+            "superhero": superhero,
+        }
+        for cur_date in generate_dates(base_date=utc_today - timedelta(1))
+        for superhero in ["Superman", "Batman"]
+    ]
+    test_result = dbt_project.test(
+        test_id, DBT_TEST_NAME, DBT_TEST_ARGS, data=data, test_column="superhero"
+    )
+    assert test_result["status"] == "pass"
+
+
+def test_column_anomalies_group_by(test_id: str, dbt_project: DbtProject):
+    utc_today = datetime.utcnow().date()
+    test_date, *training_dates = generate_dates(base_date=utc_today - timedelta(1))
+    data: List[Dict[str, Any]] = [
+        {
+            TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT),
+            "superhero": superhero,
+            "dimension": dim,
+        }
+        for cur_date in training_dates
+        for superhero in ["Superman", "Batman"]
+        for dim in ["dim1", "dim2"]
+    ]
+
+    data += [
+        {
+            TIMESTAMP_COLUMN: test_date.strftime(DATE_FORMAT),
+            "superhero": None,
+            "dimension": "dim1",
+        }
+        for _ in range(100)
+    ]
+
+    test_args = DBT_TEST_ARGS.copy()
+    test_args["dimensions"] = ["dimension"]
+    test_args["anomaly_sensitivity"] = 1
+    test_result = dbt_project.test(
+        test_id, DBT_TEST_NAME, test_args, data=data, test_column="superhero"
+    )
+
+    assert test_result["status"] == "fail"
+    assert test_result["failures"] == 1
+    description = test_result["test_results_description"].lower()
+    assert "1 anomalous" in description
+    assert "for dimension dimension" in description
+    assert "dim1" in description
+
+    data += [
+        {
+            TIMESTAMP_COLUMN: test_date.strftime(DATE_FORMAT),
+            "superhero": None,
+            "dimension": "dim2",
+        }
+        for _ in range(100)
+    ]
+
+    test_args = DBT_TEST_ARGS.copy()
+    test_args["dimensions"] = ["dimension"]
+    test_args["anomaly_sensitivity"] = 3
+    test_result = dbt_project.test(
+        test_id, DBT_TEST_NAME, test_args, data=data, test_column="superhero"
+    )
+
+    assert test_result["status"] == "fail"
+    assert test_result["failures"] == 2
+    description = test_result["test_results_description"].lower()
+    assert "2 anomalous" in description
+    assert "for dimension dimension" in description
+    assert "dim1" in description
+    assert "dim2" in description
+
+
+def test_anomalyless_column_anomalies_group_by_none_dimension(
+    test_id: str, dbt_project: DbtProject
+):
+    utc_today = datetime.utcnow().date()
+    test_date, *training_dates = generate_dates(base_date=utc_today - timedelta(1))
+    data: List[Dict[str, Any]] = [
+        {
+            TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT),
+            "superhero": superhero,
+            "dimension": dim,
+        }
+        for cur_date in training_dates
+        for superhero in ["Superman", "Batman"]
+        for dim in [None, "dim2"]
+    ]
+
+    data += [
+        {
+            TIMESTAMP_COLUMN: test_date.strftime(DATE_FORMAT),
+            "superhero": None,
+            "dimension": None,
+        }
+        for _ in range(100)
+    ]
+    data += [
+        {
+            TIMESTAMP_COLUMN: test_date.strftime(DATE_FORMAT),
+            "superhero": None,
+            "dimension": "dim2",
+        }
+        for _ in range(100)
+    ]
+
+    test_args = DBT_TEST_ARGS.copy()
+    test_args["dimensions"] = ["dimension"]
+    test_args["anomaly_sensitivity"] = 3
+    test_result = dbt_project.test(
+        test_id, DBT_TEST_NAME, test_args, data=data, test_column="superhero"
+    )
+
+    assert test_result["status"] == "fail"
+    assert test_result["failures"] == 2
+
+
+def test_anomalyless_column_anomalies_group_by_multi(
+    test_id: str, dbt_project: DbtProject
+):
+    utc_today = datetime.utcnow().date()
+    test_date, *training_dates = generate_dates(base_date=utc_today - timedelta(1))
+    data: List[Dict[str, Any]] = [
+        {
+            TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT),
+            "superhero": superhero,
+            "dimension1": dim1,
+            "dimension2": dim2,
+        }
+        for cur_date in training_dates
+        for superhero in ["Superman", "Batman"]
+        for dim1 in ["dim1", "dim2"]
+        for dim2 in ["hey", "bye"]
+    ]
+
+    data += [
+        {
+            TIMESTAMP_COLUMN: test_date.strftime(DATE_FORMAT),
+            "superhero": None,
+            "dimension1": dim1,
+            "dimension2": dim2,
+        }
+        for _ in range(100)
+        for dim1 in ["dim1", "dim2"]
+        for dim2 in ["hey"]
+    ]
+    data += [
+        {
+            TIMESTAMP_COLUMN: test_date.strftime(DATE_FORMAT),
+            "superhero": None,
+            "dimension1": dim1,
+            "dimension2": dim2,
+        }
+        for _ in range(100)
+        for dim1 in ["dim1"]
+        for dim2 in ["bye"]
+    ]
+
+    test_args = DBT_TEST_ARGS.copy()
+    test_args["dimensions"] = ["dimension1", "dimension2"]
+    test_result = dbt_project.test(
+        test_id, DBT_TEST_NAME, test_args, data=data, test_column="superhero"
+    )
+
+    assert test_result["status"] == "fail"
+    assert test_result["failures"] == 3
+
+
+def test_anomalyless_column_anomalies_group_by_description(
+    test_id: str, dbt_project: DbtProject
+):
+    utc_today = datetime.utcnow().date()
+    test_date, *training_dates = generate_dates(base_date=utc_today - timedelta(1))
+    data: List[Dict[str, Any]] = [
+        {
+            TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT),
+            "superhero": superhero,
+            "dimension": "super_dimension",
+        }
+        for cur_date in training_dates
+        for superhero in ["Superman", "Batman"]
+    ]
+    data += [
+        {
+            TIMESTAMP_COLUMN: test_date.strftime(DATE_FORMAT),
+            "superhero": None,
+            "dimension": dim,
+        }
+        for _ in range(100)
+        for dim in ["dim_new", "super_dimension"]
+    ]
+    test_args = DBT_TEST_ARGS.copy()
+    test_args["dimensions"] = ["dimension"]
+    test_result = dbt_project.test(
+        test_id, DBT_TEST_NAME, test_args, data=data, test_column="superhero"
+    )
+
+    assert test_result["status"] == "fail"
+    assert test_result["failures"] == 1
+    assert "not enough data" not in test_result["test_results_description"].lower()
+
+
+def test_anomalous_boolean_column_anomalies(test_id: str, dbt_project: DbtProject):
+    utc_today = datetime.utcnow().date()
+    test_date, *training_dates = generate_dates(base_date=utc_today - timedelta(1))
+
+    data: List[Dict[str, Any]] = [
+        {
+            TIMESTAMP_COLUMN: test_date.strftime(DATE_FORMAT),
+            "superhero_has_flown": False,
+        }
+        for _ in range(3)
+    ]
+    data += [
+        {
+            TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT),
+            "superhero_has_flown": True,
+        }
+        for cur_date in training_dates
+        for superhero in ["Superman", "Batman"]
+    ]
+
+    test_args = {
+        "timestamp_column": TIMESTAMP_COLUMN,
+        "column_anomalies": ["count_true", "count_false"],
+    }
+    test_results = dbt_project.test(
+        test_id,
+        DBT_TEST_NAME,
+        test_args,
+        data=data,
+        test_column="superhero_has_flown",
+        multiple_results=True,
+    )
+    assert len(test_results) == 2
+    assert {res["status"] for res in test_results} == {"fail"}
+    assert {res["test_sub_type"] for res in test_results} == {
+        "count_true",
+        "count_false",
+    }
+
+
+def test_col_anom_excl_detect_train(test_id: str, dbt_project: DbtProject):
+    """
+    Test the exclude_detection_period_from_training flag functionality for column anomalies.
+
+    Scenario:
+    - 30 days of normal data with low null count (0-2 nulls per day)
+    - 7 days of anomalous data with high null count (20 nulls per day) in detection period
+    - Without exclusion: anomaly gets included in training baseline, test passes (misses anomaly)
+    - With exclusion: anomaly excluded from training, test fails (detects anomaly)
+    """
+    utc_today = datetime.utcnow().date()
+
+    # Generate 30 days of normal data with variance in null count (8, 10, 12 pattern)
+    normal_pattern = [8, 10, 12]
+    normal_data = []
+    for i in range(30):
+        date = utc_today - timedelta(days=37 - i)
+        null_count = normal_pattern[i % 3]
+        normal_data.extend(
+            [
+                {TIMESTAMP_COLUMN: date.strftime(DATE_FORMAT), "superhero": superhero}
+                for superhero in ["Superman", "Batman", "Wonder Woman", "Flash"] * 10
+            ]
+        )
+        normal_data.extend(
+            [
+                {TIMESTAMP_COLUMN: date.strftime(DATE_FORMAT), "superhero": None}
+                for _ in range(null_count)
+            ]
+        )
+
+    # Generate 7 days of anomalous data (20 nulls per day) - 100% increase from mean
+    anomalous_data = []
+    for i in range(7):
+        date = utc_today - timedelta(days=7 - i)
+        anomalous_data.extend(
+            [
+                {TIMESTAMP_COLUMN: date.strftime(DATE_FORMAT), "superhero": superhero}
+                for superhero in ["Superman", "Batman", "Wonder Woman", "Flash"] * 10
+            ]
+        )
+        anomalous_data.extend(
+            [
+                {TIMESTAMP_COLUMN: date.strftime(DATE_FORMAT), "superhero": None}
+                for _ in range(20)
+            ]
+        )
+
+    all_data = normal_data + anomalous_data
+
+    # Test 1: WITHOUT exclusion (should pass - misses the anomaly because it's included in training)
+    test_args_without_exclusion = {
+        "timestamp_column": TIMESTAMP_COLUMN,
+        "column_anomalies": ["null_count"],
+        "time_bucket": {"period": "day", "count": 1},
+        "training_period": {"period": "day", "count": 30},
+        "detection_period": {"period": "day", "count": 7},
+        "min_training_set_size": 5,
+        "anomaly_sensitivity": 5,
+        "anomaly_direction": "spike",
+        "exclude_detection_period_from_training": False,
+    }
+
+    test_result_without_exclusion = dbt_project.test(
+        test_id + "_f",
+        DBT_TEST_NAME,
+        test_args_without_exclusion,
+        data=all_data,
+        test_column="superhero",
+        test_vars={"force_metrics_backfill": True},
+    )
+
+    # This should PASS because the anomaly is included in training, making it part of the baseline
+    assert test_result_without_exclusion["status"] == "pass", (
+        "Expected PASS when exclude_detection_period_from_training=False "
+        "(detection data included in training baseline)"
+    )
+
+    # Test 2: WITH exclusion (should fail - detects the anomaly because it's excluded from training)
+    test_args_with_exclusion = {
+        **test_args_without_exclusion,
+        "exclude_detection_period_from_training": True,
+    }
+
+    test_result_with_exclusion = dbt_project.test(
+        test_id + "_t",
+        DBT_TEST_NAME,
+        test_args_with_exclusion,
+        data=all_data,
+        test_column="superhero",
+        test_vars={"force_metrics_backfill": True},
+    )
+
+    # This should FAIL because the anomaly is excluded from training, so it's detected as anomalous
+    assert test_result_with_exclusion["status"] == "fail", (
+        "Expected FAIL when exclude_detection_period_from_training=True "
+        "(detection data excluded from training baseline, anomaly detected)"
+    )
+
+
+def test_col_excl_detect_train_seven_day_bucket(test_id: str, dbt_project: DbtProject):
+    """
+    Test exclude_detection_period_from_training with 7-day buckets for column anomalies.
+
+    This tests the fix where the detection period is set to the bucket size
+    when the bucket period exceeds backfill_days. With 7-day buckets
+    and default backfill_days (2), without the fix the 2-day exclusion window
+    cannot contain any 7-day bucket_end, making exclusion ineffective.
+
+    detection_period is intentionally NOT set so that backfill_days stays at
+    its default (2), which is smaller than the 7-day bucket.
+    Setting detection_period would override backfill_days and mask the bug.
+
+    Scenario:
+    - 12 normal 7-day buckets with low null count
+    - 1 anomalous 7-day bucket with high null count
+    - time_bucket: 7 days (7 days >> default backfill_days of 2)
+    - Without exclusion: anomaly absorbed into training → test passes
+    - With exclusion + fix: anomaly excluded from training → test fails
+    """
+    utc_now = datetime.utcnow().date()
+    anomaly_bucket_start = utc_now - timedelta(days=7)
+    normal_bucket_start = anomaly_bucket_start - timedelta(days=12 * 7)
+
+    normal_data: List[Dict[str, Any]] = []
+    day = normal_bucket_start
+    day_idx = 0
+    while day < anomaly_bucket_start:
+        null_count = 1 + (day_idx % 3)
+        normal_data.extend(
+            [
+                {TIMESTAMP_COLUMN: day.strftime(DATE_FORMAT), "superhero": superhero}
+                for superhero in ["Superman", "Batman", "Wonder Woman", "Flash"]
+            ]
+        )
+        normal_data.extend(
+            [
+                {TIMESTAMP_COLUMN: day.strftime(DATE_FORMAT), "superhero": None}
+                for _ in range(null_count)
+            ]
+        )
+        day += timedelta(days=1)
+        day_idx += 1
+
+    anomalous_data: List[Dict[str, Any]] = []
+    day = anomaly_bucket_start
+    while day < utc_now:
+        anomalous_data.extend(
+            [
+                {TIMESTAMP_COLUMN: day.strftime(DATE_FORMAT), "superhero": superhero}
+                for superhero in ["Superman", "Batman", "Wonder Woman", "Flash"]
+            ]
+        )
+        anomalous_data.extend(
+            [
+                {TIMESTAMP_COLUMN: day.strftime(DATE_FORMAT), "superhero": None}
+                for _ in range(10)
+            ]
+        )
+        day += timedelta(days=1)
+
+    all_data = normal_data + anomalous_data
+
+    test_args_without_exclusion = {
+        "timestamp_column": TIMESTAMP_COLUMN,
+        "column_anomalies": ["null_count"],
+        "time_bucket": {"period": "day", "count": 7},
+        "training_period": {"period": "day", "count": 91},
+        "min_training_set_size": 5,
+        "anomaly_sensitivity": 10,
+        "anomaly_direction": "spike",
+        "exclude_detection_period_from_training": False,
+    }
+
+    test_result_without = dbt_project.test(
+        test_id + "_f",
+        DBT_TEST_NAME,
+        test_args_without_exclusion,
+        data=all_data,
+        test_column="superhero",
+        test_vars={"force_metrics_backfill": True},
+    )
+    assert test_result_without["status"] == "pass", (
+        "Expected PASS when exclude_detection_period_from_training=False "
+        "(detection data included in training baseline)"
+    )
+
+    test_args_with_exclusion = {
+        **test_args_without_exclusion,
+        "exclude_detection_period_from_training": True,
+    }
+
+    test_result_with = dbt_project.test(
+        test_id + "_t",
+        DBT_TEST_NAME,
+        test_args_with_exclusion,
+        data=all_data,
+        test_column="superhero",
+        test_vars={"force_metrics_backfill": True},
+    )
+    assert test_result_with["status"] == "fail", (
+        "Expected FAIL when exclude_detection_period_from_training=True "
+        "(large bucket fix: detection period set to bucket size)"
+    )
+
+
+# Regression test for https://github.com/elementary-data/elementary/issues/2370:
+# Sunday rows must land in their week, whichever day the adapter starts weeks on.
+# Short name: the seeded table is named after it, and Postgres allows 63 characters.
+@Parametrization.autodetect_parameters()
+@Parametrization.case(
+    name="source_wednesday_run",
+    as_model=False,
+    run_started_at=datetime(2026, 9, 16, 12),
+)
+@Parametrization.case(
+    name="model_sunday_run",
+    as_model=True,
+    run_started_at=datetime(2026, 9, 13, 12),
+)
+def test_weekly_buckets_sunday_rows(
+    test_id: str, dbt_project: DbtProject, as_model: bool, run_started_at: datetime
+):
+    training_days = 12 * 7
+    run_date = run_started_at.date()
+    dates = generate_dates(
+        base_date=run_date - timedelta(days=1), days_back=training_days + 7
+    )
+    # A different null count each Sunday, so a Sunday in the wrong week shows.
+    sundays = sorted(cur_date for cur_date in dates if cur_date.isoweekday() == 7)
+    sunday_nulls = {sunday: 1 + week % 3 for week, sunday in enumerate(sundays)}
+    data: List[Dict[str, Any]] = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT), "superhero": "Superman"}
+        for cur_date in dates
+    ]
+    data += [
+        {TIMESTAMP_COLUMN: sunday.strftime(DATE_FORMAT), "superhero": None}
+        for sunday, null_count in sunday_nulls.items()
+        for _ in range(null_count)
+    ]
+
+    test_args = {
+        **DBT_TEST_ARGS,
+        "time_bucket": {"period": "week", "count": 1},
+        "training_period": {"period": "day", "count": training_days},
+    }
+    test_result = dbt_project.test(
+        test_id,
+        DBT_TEST_NAME,
+        test_args,
+        data=data,
+        test_column="superhero",
+        as_model=as_model,
+        test_vars={"custom_run_started_at": run_started_at.isoformat()},
+    )
+    assert test_result["status"] == "pass"
+
+    null_counts = _read_weekly_null_counts(dbt_project, test_id)
+    week_start_day = min(null_counts).isoweekday()
+    assert week_start_day in (1, 7), f"{min(null_counts)} is not a Monday or Sunday"
+    training_start = run_date - timedelta(days=training_days)
+    assert null_counts == _expected_weekly_null_counts(
+        sunday_nulls, training_start, run_date, week_start_day
+    )
+
+
+def _read_weekly_null_counts(dbt_project: DbtProject, test_id: str) -> Dict[date, Any]:
+    """The stored null_count of each bucket, by bucket start date."""
+    table_name = test_id.replace("[", "_").replace("]", "_").lower()
+    metrics = dbt_project.run_query(
+        f"""
+        select bucket_start, metric_value
+        from {{{{ ref("data_monitoring_metrics") }}}}
+        where metric_name = 'null_count'
+        and lower(full_table_name) like '%{table_name}'
+        """
+    )
+    assert metrics, "Found no null_count metrics"
+    return {
+        dateutil.parser.parse(str(metric["bucket_start"])).date(): metric[
+            "metric_value"
+        ]
+        for metric in metrics
+    }
+
+
+def _expected_weekly_null_counts(
+    sunday_nulls: Dict[date, int],
+    training_start: date,
+    run_date: date,
+    week_start_day: int,
+) -> Dict[date, int]:
+    """Every full week from the week of training_start to run_date, with its nulls."""
+    week_start = training_start - timedelta(
+        days=(training_start.isoweekday() - week_start_day) % 7
+    )
+    expected = {}
+    while week_start + timedelta(weeks=1) <= run_date:
+        week_end = week_start + timedelta(weeks=1)
+        expected[week_start] = sum(
+            null_count
+            for sunday, null_count in sunday_nulls.items()
+            if week_start <= sunday < week_end
+        )
+        week_start = week_end
+    return expected

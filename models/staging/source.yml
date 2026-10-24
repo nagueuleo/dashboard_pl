@@ -2,8 +2,9 @@ version: 2
 
 sources:
   - name: league
-    catalog: workspace
-    schema: pl_data
+    catalog: dev
+    description: "catalogue ou base de données sur les stats de la première league anglaise saison 2025/2026"
+    schema: bronze
     tables:
       - name: pl_data
         description: "table contenant les données sur les stats de la première league"

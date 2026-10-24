@@ -1,0 +1,38 @@
+{% macro edr_hour_of_day_expression(date_expr) %}
+    {{
+        return(
+            adapter.dispatch("edr_hour_of_day_expression", "elementary")(
+                elementary.edr_cast_as_timestamp(date_expr)
+            )
+        )
+    }}
+{% endmacro %}
+
+{# Databricks, Spark, Athena, Trino: #}
+{% macro default__edr_hour_of_day_expression(date_expr) %}
+    hour({{ date_expr }})
+{% endmacro %}
+
+{% macro bigquery__edr_hour_of_day_expression(date_expr) %}
+    extract(hour from {{ date_expr }})
+{% endmacro %}
+
+{% macro postgres__edr_hour_of_day_expression(date_expr) %}
+    extract(hour from {{ date_expr }})
+{% endmacro %}
+
+{% macro redshift__edr_hour_of_day_expression(date_expr) %}
+    extract(hour from {{ date_expr }})
+{% endmacro %}
+
+{% macro snowflake__edr_hour_of_day_expression(date_expr) %}
+    hour({{ date_expr }})
+{% endmacro %}
+
+{% macro fabric__edr_hour_of_day_expression(date_expr) %}
+    datepart(hour, {{ date_expr }})
+{% endmacro %}
+
+{% macro sqlserver__edr_hour_of_day_expression(date_expr) %}
+    {{ elementary.fabric__edr_hour_of_day_expression(date_expr) }}
+{% endmacro %}

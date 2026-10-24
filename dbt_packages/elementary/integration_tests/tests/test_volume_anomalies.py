@@ -1,0 +1,767 @@
+import re
+from datetime import datetime, timedelta
+from typing import Any, Dict, List
+
+import pytest
+from data_generator import DATE_FORMAT, generate_dates
+from dbt_project import DbtProject
+from parametrization import Parametrization
+
+TIMESTAMP_COLUMN = "updated_at"
+DBT_TEST_NAME = "elementary.volume_anomalies"
+DBT_TEST_ARGS = {"timestamp_column": TIMESTAMP_COLUMN}
+
+
+def test_anomalyless_table_volume_anomalies(test_id: str, dbt_project: DbtProject):
+    utc_today = datetime.utcnow().date()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in generate_dates(base_date=utc_today)
+    ]
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, DBT_TEST_ARGS, data=data)
+    assert test_result["status"] == "pass"
+
+
+def test_table_volume_anomalies_with_timestamp_as_sql_expression(
+    test_id: str, dbt_project: DbtProject
+):
+    utc_today = datetime.utcnow().date()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in generate_dates(base_date=utc_today)
+    ]
+    test_args = {
+        "timestamp_column": "case when updated_at is not null then updated_at else updated_at end"
+    }
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, test_args, data=data)
+    assert test_result["status"] == "pass"
+
+
+def test_full_drop_table_volume_anomalies(test_id: str, dbt_project: DbtProject):
+    utc_today = datetime.utcnow().date()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in generate_dates(base_date=utc_today)
+        if cur_date < utc_today - timedelta(days=1)
+    ]
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, DBT_TEST_ARGS, data=data)
+    assert test_result["status"] == "fail"
+
+
+def test_volume_anomalies_description_reports_anomalous_bucket(
+    test_id: str, dbt_project: DbtProject
+):
+    utc_today = datetime.utcnow().date()
+    test_date, *training_dates = generate_dates(base_date=utc_today - timedelta(days=1))
+
+    # Training buckets hold a single row each, the detected bucket spikes to six.
+    data: List[Dict[str, Any]] = [
+        {TIMESTAMP_COLUMN: test_date.strftime(DATE_FORMAT)} for _ in range(6)
+    ]
+    data += [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in training_dates
+    ]
+
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, DBT_TEST_ARGS, data=data)
+    assert test_result["status"] == "fail"
+
+    # The description must describe the anomalous bucket, not whichever scored
+    # bucket the anomaly scores query happened to return last. Warehouses render
+    # the rounded value differently ("6" vs "6.000"), so match either.
+    description = test_result["test_results_description"].lower()
+    assert re.search(r"row_count value is 6(\.0+)?\b", description), description
+
+
+@Parametrization.autodetect_parameters()
+@Parametrization.case(name="source", as_model=False)
+@Parametrization.case(name="model", as_model=True)
+def test_volume_anomalies_with_where_parameter(
+    test_id: str, dbt_project: DbtProject, as_model: bool
+):
+    utc_today = datetime.utcnow().date()
+    test_date, *training_dates = generate_dates(base_date=utc_today - timedelta(days=1))
+
+    data: List[Dict[str, Any]] = [
+        {TIMESTAMP_COLUMN: test_date.strftime(DATE_FORMAT), "payback": payback}
+        for payback in ["karate", "ka-razy", "ka-razy", "ka-razy", "ka-razy", "ka-razy"]
+    ]
+    data += [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT), "payback": payback}
+        for cur_date in training_dates
+        for payback in ["karate", "ka-razy"]
+    ]
+
+    test_result = dbt_project.test(
+        test_id, DBT_TEST_NAME, DBT_TEST_ARGS, data=data, as_model=as_model
+    )
+    assert test_result["status"] == "fail"
+
+    test_result = dbt_project.test(
+        test_id,
+        DBT_TEST_NAME,
+        DBT_TEST_ARGS,
+        as_model=as_model,
+        test_vars={"force_metrics_backfill": True},
+        test_config={"where": "payback = 'karate'"},
+    )
+    assert test_result["status"] == "pass"
+
+    test_result = dbt_project.test(
+        test_id,
+        DBT_TEST_NAME,
+        DBT_TEST_ARGS,
+        as_model=as_model,
+        test_vars={"force_metrics_backfill": True},
+        test_config={"where": "payback = 'ka-razy'"},
+    )
+    assert test_result["status"] == "fail"
+
+
+def test_volume_anomalies_with_time_buckets(test_id: str, dbt_project: DbtProject):
+    now = datetime.utcnow() - timedelta(hours=2)
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in generate_dates(
+            base_date=now, step=timedelta(hours=1), days_back=3
+        )
+        if cur_date < now - timedelta(hours=1)
+    ]
+    test_result = dbt_project.test(
+        test_id, DBT_TEST_NAME, DBT_TEST_ARGS, data=data, test_vars={"days_back": 2}
+    )
+    assert test_result["status"] == "pass"
+
+    test_args = {
+        **DBT_TEST_ARGS,
+        "time_bucket": {"period": "hour", "count": 1},
+        "days_back": 2,
+    }
+    test_result = dbt_project.test(
+        test_id,
+        DBT_TEST_NAME,
+        test_args,
+        data=data,
+        test_vars={
+            "custom_run_started_at": now.isoformat(),
+        },
+    )
+    assert test_result["status"] == "fail"
+
+
+def test_volume_anomalies_with_direction_spike(test_id: str, dbt_project: DbtProject):
+    utc_today = datetime.utcnow().date()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in generate_dates(base_date=utc_today)
+        if cur_date < utc_today - timedelta(days=1)
+        for _ in range(1 if cur_date < utc_today - timedelta(days=1) else 2)
+    ]
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, DBT_TEST_ARGS, data=data)
+    assert test_result["status"] == "fail"
+
+    test_args = {**DBT_TEST_ARGS, "anomaly_direction": "spike"}
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, test_args)
+    assert test_result["status"] == "pass"
+
+
+def test_volume_anomalies_with_direction_drop(test_id: str, dbt_project: DbtProject):
+    utc_today = datetime.utcnow().date()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in generate_dates(base_date=utc_today)
+        for _ in range(1 if cur_date < utc_today - timedelta(days=1) else 2)
+    ]
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, DBT_TEST_ARGS, data=data)
+    assert test_result["status"] == "fail"
+
+    test_args = {**DBT_TEST_ARGS, "anomaly_direction": "drop"}
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, test_args)
+    assert test_result["status"] == "pass"
+
+
+def test_volume_anomalies_with_seasonality(test_id: str, dbt_project: DbtProject):
+    utc_today = datetime.utcnow().date()
+    dates = generate_dates(
+        base_date=utc_today - timedelta(days=1),
+        step=timedelta(weeks=1),
+        days_back=7 * 14,
+    )
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in dates
+        if cur_date < utc_today - timedelta(weeks=1)
+    ]
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, DBT_TEST_ARGS, data=data)
+    assert test_result["status"] == "pass"
+
+    test_args = {**DBT_TEST_ARGS, "seasonality": "day_of_week"}
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, test_args)
+    assert test_result["status"] == "fail"
+
+
+def test_volume_anomalies_with_sensitivity(test_id: str, dbt_project: DbtProject):
+    utc_today = datetime.utcnow().date()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for i, cur_date in enumerate(generate_dates(base_date=utc_today))
+        for _ in range(
+            1 if i % 2 == 0 else 2 if cur_date < utc_today - timedelta(days=1) else 3
+        )
+    ]
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, DBT_TEST_ARGS, data=data)
+    assert test_result["status"] == "pass"
+
+    test_args = {**DBT_TEST_ARGS, "sensitivity": 2}
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, test_args)
+    assert test_result["status"] == "fail"
+
+
+def test_volume_anomalies_no_timestamp(test_id: str, dbt_project: DbtProject):
+    data = [{"hello": "world"}]
+    min_training_set_size = 4
+    test_args = {
+        # Using smaller training set size to avoid needing to run many tests.
+        "min_training_set_size": min_training_set_size,
+        # Smaller sensitivity due to smaller training set size.
+        "sensitivity": 1.25,
+    }
+    dbt_project.seed(data, test_id)
+    for _ in range(min_training_set_size):
+        test_result = dbt_project.test(test_id, DBT_TEST_NAME, test_args)
+        assert test_result["status"] == "pass"
+
+    dbt_project.seed(data * 2, test_id)
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, test_args)
+    assert test_result["status"] == "fail"
+
+
+@pytest.mark.only_on_targets(["bigquery"])
+def test_wildcard_name_table_volume_anomalies(test_id: str, dbt_project: DbtProject):
+    utc_today = datetime.utcnow().date()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in generate_dates(base_date=utc_today)
+        if cur_date < utc_today - timedelta(days=1)
+    ]
+    wildcarded_table_name = test_id[:-1] + "*"
+    test_result = dbt_project.test(
+        wildcarded_table_name,
+        DBT_TEST_NAME,
+        DBT_TEST_ARGS,
+        data=data,
+        table_name=test_id,
+    )
+    assert test_result["status"] == "fail"
+
+
+@Parametrization.autodetect_parameters()
+@Parametrization.case(
+    name="true_positive",
+    expected_result="fail",
+    drop_failure_percent_threshold=5,
+    metric_value=25,
+)
+@Parametrization.case(
+    name="false_positive",
+    expected_result="fail",
+    drop_failure_percent_threshold=None,
+    metric_value=29,
+)
+@Parametrization.case(
+    name="true_negative",
+    expected_result="pass",
+    drop_failure_percent_threshold=5,
+    metric_value=29,
+)
+def test_volume_anomaly_static_data_drop(
+    test_id: str,
+    dbt_project: DbtProject,
+    expected_result: str,
+    drop_failure_percent_threshold: int,
+    metric_value: int,
+):
+    now = datetime.utcnow()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in generate_dates(base_date=now, step=timedelta(days=1))
+        if cur_date < now - timedelta(days=1)
+    ] * 30
+    data += [
+        {TIMESTAMP_COLUMN: (now - timedelta(days=1)).strftime(DATE_FORMAT)}
+    ] * metric_value
+
+    # 30 new rows every day
+    # 25 new rows in the last day
+    # z-score ~ -3.6
+
+    test_args = {
+        **DBT_TEST_ARGS,
+        "time_bucket": {"period": "day", "count": 1},
+        "ignore_small_changes": {
+            "drop_failure_percent_threshold": drop_failure_percent_threshold
+        },
+    }
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, test_args, data=data)
+    assert test_result["status"] == expected_result
+
+
+@Parametrization.autodetect_parameters()
+@Parametrization.case(
+    name="true_positive",
+    expected_result="fail",
+    spike_failure_percent_threshold=5,
+    metric_value=35,
+)
+@Parametrization.case(
+    name="false_positive",
+    expected_result="fail",
+    spike_failure_percent_threshold=None,
+    metric_value=31,
+)
+@Parametrization.case(
+    name="true_negative",
+    expected_result="pass",
+    spike_failure_percent_threshold=5,
+    metric_value=31,
+)
+def test_volume_anomaly_static_data_spike(
+    test_id: str,
+    dbt_project: DbtProject,
+    expected_result: str,
+    spike_failure_percent_threshold: int,
+    metric_value: int,
+):
+    now = datetime.utcnow()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in generate_dates(base_date=now, step=timedelta(days=1))
+        if cur_date < now - timedelta(days=1)
+    ] * 30
+    data += [
+        {TIMESTAMP_COLUMN: (now - timedelta(days=1)).strftime(DATE_FORMAT)}
+    ] * metric_value
+
+    # 30 new rows every day
+    # (metric_value) new rows in the last day
+    # z-score ~ -3.6
+
+    test_args = {
+        **DBT_TEST_ARGS,
+        "time_bucket": {"period": "day", "count": 1},
+        "ignore_small_changes": {
+            "spike_failure_percent_threshold": spike_failure_percent_threshold
+        },
+    }
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, test_args, data=data)
+    assert test_result["status"] == expected_result
+
+
+def test_not_fail_on_zero(test_id: str, dbt_project: DbtProject):
+    now = datetime.utcnow()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in generate_dates(base_date=now, step=timedelta(days=1))
+        if cur_date < now - timedelta(days=1)
+    ]
+
+    test_args = {**DBT_TEST_ARGS, "fail_on_zero": False, "anomaly_sensitivity": 1000}
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, test_args, data=data)
+    assert test_result["status"] == "pass"
+
+
+def test_fail_on_zero(test_id: str, dbt_project: DbtProject):
+    now = datetime.utcnow()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in generate_dates(base_date=now, step=timedelta(days=1))
+        if cur_date < now - timedelta(days=1)
+    ]
+
+    test_args = {**DBT_TEST_ARGS, "fail_on_zero": True, "anomaly_sensitivity": 1000}
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, test_args, data=data)
+    assert test_result["status"] == "fail"
+
+
+@Parametrization.autodetect_parameters()
+@Parametrization.case(
+    name="day",
+    period="day",
+    fail_value=4,
+    pass_value=1,
+)
+@Parametrization.case(
+    name="hour",
+    period="hour",
+    fail_value=4 * 24,
+    pass_value=24,
+)
+def test_anomalyless_table_volume_anomalies_periods_params(
+    test_id: str, dbt_project: DbtProject, period: str, fail_value: int, pass_value: int
+):
+    utc_today = datetime.utcnow().date() - timedelta(days=4)
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in generate_dates(base_date=utc_today)
+    ]
+    data += [{TIMESTAMP_COLUMN: utc_today.strftime(DATE_FORMAT)}]
+
+    test_args = {
+        **DBT_TEST_ARGS,
+        "training_period": {"period": "day", "count": 30},
+        "detection_period": {"period": period, "count": pass_value},
+    }
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, test_args, data=data)
+    assert test_result["status"] == "pass"
+
+    test_args = {
+        **test_args,
+        "detection_period": {"period": period, "count": fail_value},
+    }
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, test_args, data=data)
+    assert test_result["status"] == "fail"
+
+
+@Parametrization.autodetect_parameters()
+@Parametrization.case(
+    name="dont_ignore_drop",
+    expected_result="fail",
+    spike_failure_percent_threshold=2,
+    drop_failure_percent_threshold=50,
+    anomaly_sensitivity=3,
+    metric_value=14,
+)
+@Parametrization.case(
+    name="ignore_drop",
+    expected_result="pass",
+    spike_failure_percent_threshold=2,
+    drop_failure_percent_threshold=50,
+    anomaly_sensitivity=3,
+    metric_value=16,
+)
+@Parametrization.case(
+    name="non_anomalous_drop",
+    expected_result="pass",
+    spike_failure_percent_threshold=2,
+    drop_failure_percent_threshold=50,
+    anomaly_sensitivity=3000,
+    metric_value=14,
+)
+@Parametrization.case(
+    name="ignore_spike",
+    expected_result="pass",
+    spike_failure_percent_threshold=50,
+    drop_failure_percent_threshold=2,
+    anomaly_sensitivity=3,
+    metric_value=46,
+)
+@Parametrization.case(
+    name="dont_ignore_spike",
+    expected_result="fail",
+    spike_failure_percent_threshold=20,
+    drop_failure_percent_threshold=2,
+    anomaly_sensitivity=3,
+    metric_value=44,
+)
+@Parametrization.case(
+    name="non_anomalous_spike",
+    expected_result="pass",
+    spike_failure_percent_threshold=20,
+    drop_failure_percent_threshold=2,
+    anomaly_sensitivity=3000,
+    metric_value=44,
+)
+def test_ignore_small_changes_both(
+    test_id: str,
+    dbt_project: DbtProject,
+    expected_result: str,
+    spike_failure_percent_threshold: int,
+    drop_failure_percent_threshold: int,
+    anomaly_sensitivity: int,
+    metric_value: int,
+):
+    now = datetime.utcnow()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in generate_dates(base_date=now, step=timedelta(days=1))
+        if cur_date < now - timedelta(days=1)
+    ] * 30
+    data += [
+        {TIMESTAMP_COLUMN: (now - timedelta(days=1)).strftime(DATE_FORMAT)}
+    ] * metric_value
+
+    # 30 new rows every day
+    # (metric_value) new rows in the last day
+
+    test_args = {
+        **DBT_TEST_ARGS,
+        "time_bucket": {"period": "day", "count": 1},
+        "ignore_small_changes": {
+            "spike_failure_percent_threshold": spike_failure_percent_threshold,
+            "drop_failure_percent_threshold": drop_failure_percent_threshold,
+        },
+        "sensitivity": anomaly_sensitivity,
+    }
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, test_args, data=data)
+    assert test_result["status"] == expected_result
+
+
+# Baseline: 30 rows/day, then a last day with `metric_value` rows. With the
+# default sensitivity every last-day value below is a z-score anomaly, so the
+# result depends only on ignore_small_changes. A threshold ignores small changes
+# in its own direction only; the other direction must still be detected.
+# - spike threshold 50%: 5 rows (-83%) is a drop -> fail; 40 rows (+33%) is a
+#   spike under 50% -> pass.
+# - drop threshold 50%: 100 rows (+233%) is a spike -> fail; 20 rows (-33%) is a
+#   drop under 50% -> pass.
+@Parametrization.autodetect_parameters()
+@Parametrization.case(
+    name="spike_drop_detected",
+    expected_result="fail",
+    spike_failure_percent_threshold=50,
+    drop_failure_percent_threshold=None,
+    metric_value=5,
+)
+@Parametrization.case(
+    name="spike_small_ignored",
+    expected_result="pass",
+    spike_failure_percent_threshold=50,
+    drop_failure_percent_threshold=None,
+    metric_value=40,
+)
+@Parametrization.case(
+    name="drop_spike_detected",
+    expected_result="fail",
+    spike_failure_percent_threshold=None,
+    drop_failure_percent_threshold=50,
+    metric_value=100,
+)
+@Parametrization.case(
+    name="drop_small_ignored",
+    expected_result="pass",
+    spike_failure_percent_threshold=None,
+    drop_failure_percent_threshold=50,
+    metric_value=20,
+)
+def test_one_side_threshold(
+    test_id: str,
+    dbt_project: DbtProject,
+    expected_result: str,
+    spike_failure_percent_threshold: int,
+    drop_failure_percent_threshold: int,
+    metric_value: int,
+):
+    now = datetime.utcnow()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in generate_dates(base_date=now, step=timedelta(days=1))
+        if cur_date < now - timedelta(days=1)
+    ] * 30
+    data += [
+        {TIMESTAMP_COLUMN: (now - timedelta(days=1)).strftime(DATE_FORMAT)}
+    ] * metric_value
+
+    ignore_small_changes = {}
+    if spike_failure_percent_threshold is not None:
+        ignore_small_changes[
+            "spike_failure_percent_threshold"
+        ] = spike_failure_percent_threshold
+    if drop_failure_percent_threshold is not None:
+        ignore_small_changes[
+            "drop_failure_percent_threshold"
+        ] = drop_failure_percent_threshold
+
+    test_args = {
+        **DBT_TEST_ARGS,
+        "time_bucket": {"period": "day", "count": 1},
+        "anomaly_direction": "both",
+        "ignore_small_changes": ignore_small_changes,
+    }
+    test_result = dbt_project.test(test_id, DBT_TEST_NAME, test_args, data=data)
+    assert test_result["status"] == expected_result
+
+
+def test_anomalyless_vol_anomalies_with_test_materialization(
+    test_id: str, dbt_project: DbtProject
+):
+    # Anomaly tests don't require the test materialization anymore, but this test serves as a sanity check that the test materialization
+    # doesn't interfere with them when it's enabled.
+
+    utc_today = datetime.utcnow().date()
+    data = [
+        {TIMESTAMP_COLUMN: cur_date.strftime(DATE_FORMAT)}
+        for cur_date in generate_dates(base_date=utc_today)
+    ]
+    test_result = dbt_project.test(
+        test_id,
+        DBT_TEST_NAME,
+        DBT_TEST_ARGS,
+        data=data,
+        test_vars={"enable_elementary_test_materialization": True},
+    )
+    assert test_result["status"] == "pass"
+
+
+# Test for exclude_detection_period_from_training functionality
+# This test demonstrates the use case where:
+# 1. Detection period contains anomalous data that would normally be included in training
+# 2. With exclude_detection_period_from_training=False: anomaly is missed (test passes) because training includes the anomaly
+# 3. With exclude_detection_period_from_training=True: anomaly is detected (test fails) because training excludes the anomaly
+def test_exclude_detection_from_training(test_id: str, dbt_project: DbtProject):
+    """
+    Test the exclude_detection_period_from_training flag functionality.
+
+    Scenario:
+    - 30 days of normal data with variance (98, 100, 102 rows per day pattern)
+    - 7 days of anomalous data (114 rows per day) in detection period
+    - Without exclusion: anomaly gets included in training baseline, test passes (misses anomaly)
+    - With exclusion: anomaly excluded from training, test fails (detects anomaly)
+    """
+    utc_now = datetime.utcnow()
+
+    # Generate 30 days of normal data with variance (98, 100, 102 pattern)
+    normal_pattern = [98, 100, 102]
+    normal_data = []
+    for i in range(30):
+        date = utc_now - timedelta(days=37 - i)
+        rows_per_day = normal_pattern[i % 3]
+        normal_data.extend(
+            [
+                {TIMESTAMP_COLUMN: date.strftime(DATE_FORMAT)}
+                for _ in range(rows_per_day)
+            ]
+        )
+
+    # Generate 7 days of anomalous data (114 rows per day) - this will be in detection period
+    anomalous_data = []
+    for i in range(7):
+        date = utc_now - timedelta(days=7 - i)
+        anomalous_data.extend(
+            [
+                {TIMESTAMP_COLUMN: date.strftime(DATE_FORMAT)}
+                for _ in range(114)  # 14% increase from mean
+            ]
+        )
+
+    all_data = normal_data + anomalous_data
+
+    # Test 1: WITHOUT exclusion (should pass - misses the anomaly because it's included in training)
+    test_args_without_exclusion = {
+        **DBT_TEST_ARGS,
+        "training_period": {"period": "day", "count": 30},
+        "detection_period": {"period": "day", "count": 7},
+        "time_bucket": {"period": "day", "count": 1},
+        "sensitivity": 5,  # Higher sensitivity to allow anomaly to be absorbed
+        # exclude_detection_period_from_training is not set (defaults to False/None)
+    }
+
+    test_result_without_exclusion = dbt_project.test(
+        test_id + "_without_exclusion",
+        DBT_TEST_NAME,
+        test_args_without_exclusion,
+        data=all_data,
+    )
+
+    # This should PASS because the anomaly is included in training, making it part of the baseline
+    assert (
+        test_result_without_exclusion["status"] == "pass"
+    ), "Test should pass when anomaly is included in training"
+
+    # Test 2: WITH exclusion (should fail - detects the anomaly because it's excluded from training)
+    test_args_with_exclusion = {
+        **test_args_without_exclusion,
+        "exclude_detection_period_from_training": True,
+    }
+
+    test_result_with_exclusion = dbt_project.test(
+        test_id + "_with_exclusion",
+        DBT_TEST_NAME,
+        test_args_with_exclusion,
+        data=all_data,
+    )
+
+    # This should FAIL because the anomaly is excluded from training, so it's detected as anomalous
+    assert (
+        test_result_with_exclusion["status"] == "fail"
+    ), "Test should fail when anomaly is excluded from training"
+
+
+def test_excl_detect_train_seven_day_bucket(test_id: str, dbt_project: DbtProject):
+    """
+    Test exclude_detection_period_from_training with 7-day buckets.
+
+    This tests the fix where the detection period is set to the bucket size
+    when the bucket period exceeds backfill_days. With 7-day buckets
+    and default backfill_days (2), without the fix the 2-day exclusion window
+    cannot contain any 7-day bucket_end, making exclusion ineffective.
+
+    detection_period is intentionally NOT set so that backfill_days stays at
+    its default (2), which is smaller than the 7-day bucket.
+    Setting detection_period would override backfill_days and mask the bug.
+
+    Scenario:
+    - 12 normal 7-day buckets
+    - 1 anomalous 7-day bucket
+    - time_bucket: 7 days (7 days >> default backfill_days of 2)
+    - Without exclusion: anomaly absorbed into training → test passes
+    - With exclusion + fix: anomaly excluded from training → test fails
+    """
+    utc_now = datetime.utcnow()
+    utc_today = utc_now.date()
+    anomaly_bucket_start = utc_today - timedelta(days=7)
+    normal_bucket_start = anomaly_bucket_start - timedelta(days=12 * 7)
+
+    normal_data = []
+    day = normal_bucket_start
+    day_idx = 0
+    while day < anomaly_bucket_start:
+        rows_per_day = 8 + (day_idx % 3)
+        normal_data.extend(
+            [{TIMESTAMP_COLUMN: day.strftime(DATE_FORMAT)} for _ in range(rows_per_day)]
+        )
+        day += timedelta(days=1)
+        day_idx += 1
+
+    anomalous_data = []
+    day = anomaly_bucket_start
+    while day < utc_today:
+        anomalous_data.extend(
+            [{TIMESTAMP_COLUMN: day.strftime(DATE_FORMAT)} for _ in range(50)]
+        )
+        day += timedelta(days=1)
+
+    all_data = normal_data + anomalous_data
+
+    test_args_without_exclusion = {
+        **DBT_TEST_ARGS,
+        "training_period": {"period": "day", "count": 91},
+        "time_bucket": {"period": "day", "count": 7},
+        "sensitivity": 10,
+    }
+
+    test_result_without = dbt_project.test(
+        test_id + "_without",
+        DBT_TEST_NAME,
+        test_args_without_exclusion,
+        data=all_data,
+        test_vars={"force_metrics_backfill": True},
+    )
+    assert (
+        test_result_without["status"] == "pass"
+    ), "Test should pass when anomaly is included in training"
+
+    test_args_with_exclusion = {
+        **test_args_without_exclusion,
+        "exclude_detection_period_from_training": True,
+    }
+
+    test_result_with = dbt_project.test(
+        test_id + "_with",
+        DBT_TEST_NAME,
+        test_args_with_exclusion,
+        data=all_data,
+        test_vars={"force_metrics_backfill": True},
+    )
+    assert (
+        test_result_with["status"] == "fail"
+    ), "Test should fail when anomaly is excluded from training (large bucket fix)"

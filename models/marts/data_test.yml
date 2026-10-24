@@ -1,0 +1,160 @@
+version : 2
+# Ce fichier permet de configurer les tests générique pour nos différents modèles. Il est important de noter que les tests génériques sont appliqués à tous les modèles qui les référencent, ce qui garantit une cohérence dans la validation des données à travers notre projet dbt.
+models:
+  - name: Fact_pldata
+    config:
+      contract:
+        enforced: true
+    description: "{{ doc('data_description') }}"
+    columns:
+      - name: stats_key
+        description: "{{ doc('stats_key_desc')}}"
+        data_type: int
+        tests:
+          - unique
+          - not_null
+      - name: league
+        description: "{{ doc('league_desc') }}"
+        data_type: string
+        tests:
+          - not_null
+      - name: season
+        description: "{{ doc('season_desc') }}"
+        data_type: bigint
+        tests:
+          - not_null
+      - name: team
+        description: "{{ doc('team_desc') }}"
+        data_type: string
+        tests:
+          - test_is_null
+      - name: opponent
+        description: "Equipe adversaire"
+        data_type: string
+        tests:
+          - not_null
+      - name: game
+        description: "Nom de la partie"
+        data_type: string
+        tests:
+          - not_null
+      - name: date
+        description: "Date de la rencontre"
+        data_type: date
+        tests:
+          - not_null
+      - name: time
+        description: "Heure de la rencontre"
+        data_type: string
+        tests:
+          - not_null
+      - name: round
+        description: "défini la journée de la rencontre si c'est la première ou la deuxième partie de la saison"
+        data_type: string
+        tests:
+          - not_null
+      - name: day
+        description: "défini le jour de la rencontre"
+        data_type: string
+        tests:
+          - not_null
+      - name: venue
+        description: "défini le stade de la rencontre"
+        data_type: string
+        tests:
+          - not_null
+      - name: result
+        description: "défini le resultat de la rencontre"
+        data_type: string
+        tests:
+          - not_null
+      - name: gf
+        description: "Nombre de buts marqués"
+        data_type: bigint
+        tests:
+          - not_null
+      - name: ga
+        description: "Nombre de buts encaissés"
+        data_type: bigint
+        tests:
+          - not_null
+      - name: xg
+        description: "Nombre de buts attendus"
+        data_type: double
+        tests:
+          - not_null
+      - name: xga
+        description: "Nombre de buts encaissés attendus"
+        data_type: double
+        tests:
+          - not_null
+      - name: poss
+        description: "Pourcentage de possession de balle"
+        data_type: bigint
+        tests:
+          - not_null
+      - name: attendance
+        description: "Nombre de spectateurs présents lors de la rencontre"
+        data_type: long
+        tests:
+          - not_null
+      - name: captain
+        description: "Capitaine de l'equipe"
+        data_type: string
+        tests:
+          - not_null
+      - name: formation
+        description: "Formation de l'equipe"
+        data_type: string
+        tests:
+          - not_null
+      - name: opp_formation
+        description: "Formation de l'equipe adversaire"
+        data_type: string
+        tests:
+          - not_null
+      - name: referee
+        description: "Arbitre de la rencontre"
+        data_type: string
+        tests:
+          - not_null
+      - name: match_report
+        description: "Rapport de la rencontre"
+        data_type: string
+        tests:
+          - not_null
+      - name: formation_key
+        description: "clé de la formation de l'equipe"
+        data_type: integer
+        tests:
+          - not_null
+     
+      - name: refree_key
+        description: "clé de l'arbitre de la rencontre"
+        data_type: integer
+        tests:
+          - not_null
+
+      - name: venue_key
+        description: "clé du stade de la rencontre"
+        data_type: integer
+        tests:
+          - not_null
+  
+      - name: team_key
+        description: "clé de l'equipe"
+        data_type: integer
+        tests:
+          - not_null
+ 
+      - name: opponent_key
+        description: "clé de l'equipe adversaire"
+        data_type: integer
+        tests:
+          - not_null
+      - name: date_key
+        description: "clé de la date de la rencontre"
+        data_type: integer
+        tests:
+          - not_null
+

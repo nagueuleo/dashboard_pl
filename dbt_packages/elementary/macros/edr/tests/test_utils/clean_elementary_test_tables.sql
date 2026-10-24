@@ -1,0 +1,194 @@
+{% macro clean_current_invocation_test_tables() %}
+    {% set test_table_relations = [] %}
+    {% set temp_test_table_relations_map = elementary.get_cache(
+        "temp_test_table_relations_map"
+    ) %}
+    {% if temp_test_table_relations_map %}
+        {% for test_entry in temp_test_table_relations_map.values() %}
+            {% for test_relation in test_entry.values() %}
+                {% do test_table_relations.append(test_relation) %}
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+    {% do elementary.clean_elementary_test_tables(test_table_relations) %}
+{% endmacro %}
+
+
+{% macro clean_elementary_test_tables(test_table_relations) %}
+    {% if test_table_relations %}
+        {# Extra entry-point to clean up tables before dropping the relation #}
+        {% do elementary.clean_up_tables(test_table_relations) %}
+        {% do elementary.file_log(
+            "Deleting temporary Elementary test tables: {}".format(
+                test_table_relations
+            )
+        ) %}
+        {% set queries = elementary.get_clean_elementary_test_tables_queries(
+            test_table_relations
+        ) %}
+        {% for query in queries %} {% do elementary.run_query(query) %} {% endfor %}
+    {% endif %}
+{% endmacro %}
+
+
+{% macro cleanup_stale_test_tables(hours=24, limit=2000) %}
+    {% set elementary_database, elementary_schema = (
+        elementary.get_package_database_and_schema()
+    ) %}
+    {% set table_name_pattern = "test%__tmp_%" %}
+    {% set tables = elementary.get_stale_test_tables(
+        elementary_database,
+        elementary_schema,
+        hours,
+        table_name_pattern,
+        limit,
+    ) %}
+    {% if tables | length == 0 %}
+        {% do elementary.edr_log(
+            "No temp tables older than "
+            ~ hours
+            ~ " hours found - nothing to clean up."
+        ) %}
+    {% else %}
+        {% do elementary.edr_log(
+            "Dropping " ~ tables
+            | length ~ " temp tables older than " ~ hours ~ " hours."
+        ) %}
+        {% do elementary.clean_elementary_test_tables(tables) %}
+        {% do elementary.edr_log("Done.") %}
+    {% endif %}
+{% endmacro %}
+
+
+{% macro get_clean_elementary_test_tables_queries(test_table_relations) %}
+    {% do return(
+        adapter.dispatch(
+            "get_clean_elementary_test_tables_queries", "elementary"
+        )(test_table_relations)
+    ) %}
+{% endmacro %}
+
+{% macro default__get_clean_elementary_test_tables_queries(test_table_relations) %}
+    {% do return(
+        elementary.get_transaction_clean_elementary_test_tables_queries(
+            test_table_relations
+        )
+    ) %}
+{% endmacro %}
+
+{% macro bigquery__get_clean_elementary_test_tables_queries(test_table_relations) %}
+    {% do return(
+        elementary.get_transactionless_clean_elementary_test_tables_queries(
+            test_table_relations
+        )
+    ) %}
+{% endmacro %}
+
+{% macro redshift__get_clean_elementary_test_tables_queries(test_table_relations) %}
+    {% do return(
+        elementary.get_transactionless_clean_elementary_test_tables_queries(
+            test_table_relations
+        )
+    ) %}
+{% endmacro %}
+
+{% macro spark__get_clean_elementary_test_tables_queries(test_table_relations) %}
+    {% do return(
+        elementary.get_transactionless_clean_elementary_test_tables_queries(
+            test_table_relations
+        )
+    ) %}
+{% endmacro %}
+
+{% macro fabricspark__get_clean_elementary_test_tables_queries(test_table_relations) %}
+    {{
+        return(
+            elementary.spark__get_clean_elementary_test_tables_queries(
+                test_table_relations
+            )
+        )
+    }}
+{% endmacro %}
+
+{% macro clickhouse__get_clean_elementary_test_tables_queries(test_table_relations) %}
+    {# Self-hosted clustered ClickHouse installations require tables to be dropped on all cluster nodes explicitly #}
+    {% set queries = [] %}
+    {% for test_relation in test_table_relations %}
+        {% do queries.append(
+            "DROP TABLE IF EXISTS {} {} SYNC".format(
+                test_relation, on_cluster_clause(test_relation)
+            )
+        ) %}
+    {% endfor %}
+    {% do return(queries) %}
+{% endmacro %}
+
+{% macro athena__get_clean_elementary_test_tables_queries(test_table_relations) %}
+    {# Athena requires explicit backtick quoting for DROP TABLE statements to avoid parsing errors #}
+    {% set queries = [] %}
+    {% for test_relation in test_table_relations %}
+        {% set escaped_database = (
+            test_relation.database | replace("`", "``")
+            if test_relation.database
+            else none
+        ) %}
+        {% set escaped_schema = test_relation.schema | replace("`", "``") %}
+        {% set escaped_identifier = test_relation.identifier | replace("`", "``") %}
+        {% if test_relation.database %}
+            {% set quoted_relation = "`{}`.`{}`.`{}`".format(
+                escaped_database, escaped_schema, escaped_identifier
+            ) %}
+        {% else %}
+            {% set quoted_relation = "`{}`.`{}`".format(
+                escaped_schema, escaped_identifier
+            ) %}
+        {% endif %}
+        {% do queries.append("DROP TABLE IF EXISTS {}".format(quoted_relation)) %}
+    {% endfor %}
+    {% do return(queries) %}
+{% endmacro %}
+
+{% macro trino__get_clean_elementary_test_tables_queries(test_table_relations) %}
+    {% do return(
+        elementary.get_transactionless_clean_elementary_test_tables_queries(
+            test_table_relations
+        )
+    ) %}
+{% endmacro %}
+
+{% macro duckdb__get_clean_elementary_test_tables_queries(test_table_relations) %}
+    {% do return(
+        elementary.get_transactionless_clean_elementary_test_tables_queries(
+            test_table_relations
+        )
+    ) %}
+{% endmacro %}
+
+{% macro dremio__get_clean_elementary_test_tables_queries(test_table_relations) %}
+    {% do return(
+        elementary.get_transactionless_clean_elementary_test_tables_queries(
+            test_table_relations
+        )
+    ) %}
+{% endmacro %}
+
+{% macro get_transaction_clean_elementary_test_tables_queries(test_table_relations) %}
+    {% set query %}
+        BEGIN TRANSACTION;
+        {% for test_relation in test_table_relations %}
+            DROP TABLE IF EXISTS {{ test_relation }};
+        {% endfor %}
+        COMMIT;
+    {% endset %}
+    {% do return([query]) %}
+{% endmacro %}
+
+{% macro get_transactionless_clean_elementary_test_tables_queries(
+    test_table_relations
+) %}
+    {% set queries = [] %}
+    {% for test_relation in test_table_relations %}
+        {% do queries.append("DROP TABLE IF EXISTS {}".format(test_relation)) %}
+    {% endfor %}
+    {% do return(queries) %}
+{% endmacro %}
