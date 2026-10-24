@@ -68,27 +68,27 @@ models:
         data_type: string
         tests:
           - not_null
-      - name: GF
+      - name: gf
         description: "Nombre de buts marqués"
         data_type: bigint
         tests:
           - not_null
-      - name: GA
+      - name: ga
         description: "Nombre de buts encaissés"
         data_type: bigint
         tests:
           - not_null
-      - name: xG
+      - name: xg
         description: "Nombre de buts attendus"
         data_type: double
         tests:
           - not_null
-      - name: xGA
+      - name: xga
         description: "Nombre de buts encaissés attendus"
         data_type: double
         tests:
           - not_null
-      - name: Poss
+      - name: poss
         description: "Pourcentage de possession de balle"
         data_type: bigint
         tests:
@@ -98,22 +98,22 @@ models:
         data_type: long
         tests:
           - not_null
-      - name: Captain
+      - name: captain
         description: "Capitaine de l'equipe"
         data_type: string
         tests:
           - not_null
-      - name: Formation
+      - name: formation
         description: "Formation de l'equipe"
         data_type: string
         tests:
           - not_null
-      - name: Opp_Formation
+      - name: opp_formation
         description: "Formation de l'equipe adversaire"
         data_type: string
         tests:
           - not_null
-      - name: Referee
+      - name: referee
         description: "Arbitre de la rencontre"
         data_type: string
         tests:
