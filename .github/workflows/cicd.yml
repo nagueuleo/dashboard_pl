@@ -2,12 +2,16 @@
 name: dbt CI/CD
 
 on:
+  schedule:
+    - cron: "0 3 * * *"
+
   pull_request:
     types:
       - opened
       - synchronize
       - reopened
       - ready_for_review
+
   push:
     branches:
       - main
@@ -20,8 +24,7 @@ jobs:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
       DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-
-    
+      DBT_PROFILES_DIR: ./
 
     steps:
       - name: Checkout code
@@ -42,23 +45,15 @@ jobs:
 
       - name: Lint dbt models
         run: sqlfluff lint models/
-        env:
-            DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-            DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
-            DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
-
-      - name: Check connection
+      - name: Check Databricks connection
         run: dbt debug
 
       - name: Parse dbt project
         run: dbt parse
 
-      - name: Build dbt models
-        run: dbt build --full-refresh --profiles-dir ./
-
-      - name: test models
-        run: dbt test
-        
-      - name: compilation of models
+      - name: Compile dbt models
         run: dbt compile
+
+      - name: Build dbt models and run tests
+        run: dbt build
