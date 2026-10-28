@@ -1,59 +1,60 @@
 name: dbt CD - Production
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - dbt CI
+    types:
+      - completed
     branches:
       - main
 
-  workflow_dispatch:
+permissions:
+  contents: read
 
 jobs:
-  dbt_ci:
+  deploy_prod:
+    name: Deploy dbt to Production
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
+
     runs-on: ubuntu-latest
     environment: prod
 
     env:
       DBT_TARGET: prod
+      DBT_PROFILES_DIR: ./
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
       DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-      DBT_PROFILES_DIR: ./
 
     steps:
-      # etape 1: Checkout le depôt
-      - name: Checkout code
+      - name: Checkout validated commit
         uses: actions/checkout@v4
-      # étape 2: version de python et son environnement
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: "pip"
-      # étape 3: mettre à jour le pip de python et ses dépendances setuptools et wheel
-      - name: upgrade pip and  setuptools
-        run: python -m pip install --upgrade pip setuptools wheel
-      # étape 4: création d'un environnement virtuel et installation des dépendances du projet
+          cache: pip
+
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt
-      # étape 5: installation des packages dbt
+
       - name: Install dbt packages
         run: dbt deps
-      # étape 6: Lint des modèles dbt
-      - name: Lint dbt models
-        run: sqlfluff lint models/
-      #étape 7: Vérification de la connexion à Databricks
+
       - name: Check Databricks connection
-        run: dbt debug 
-      #étape 8: Analyse du projet dbt
-      - name: Parse dbt project
-        run: dbt parse
-      #étape 9: Compilation des modèles dbt
-      - name: Compile dbt models
-        run: dbt compile
-      #étape 10: Construction des modèles dbt et exécution des tests
-      - name: Build dbt models and run tests
-        run: dbt build
-     #étape 11: Génération de la documentation dbt
+        run: dbt debug --target prod
+
+      - name: Deploy models and run tests
+        run: dbt build --target prod
+
       - name: Generate dbt documentation
-        run: dbt docs generate
+        run: dbt docs generate --target prod
+
