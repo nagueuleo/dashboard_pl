@@ -1,29 +1,27 @@
 name: dbt CI
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
 
 jobs:
   dbt_ci:
+    name: Validate dbt models
     runs-on: ubuntu-latest
 
     env:
       DBT_TARGET: dev
+      DBT_PROFILES_DIR: ./
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
       DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-      DBT_PROFILES_DIR: ./
 
     steps:
       - name: Checkout code
@@ -33,13 +31,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: "pip"
-
-      - name: Upgrade pip, setuptools and wheel
-        run: python -m pip install --upgrade pip setuptools wheel
+          cache: pip
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt
 
       - name: Install dbt packages
         run: dbt deps
@@ -48,16 +45,14 @@ jobs:
         run: sqlfluff lint models/
 
       - name: Check Databricks connection
-        run: dbt debug
+        run: dbt debug --target dev
 
       - name: Parse dbt project
-        run: dbt parse
+        run: dbt parse --target dev
 
       - name: Compile dbt models
-        run: dbt compile
+        run: dbt compile --target dev
 
-      - name: Build dbt models and run tests
-        run: dbt build
+      - name: Build models and run tests in dev
+        run: dbt build --target dev
 
-      - name: Generate dbt documentation
-        run: dbt docs generate
