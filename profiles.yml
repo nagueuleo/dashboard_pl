@@ -1,5 +1,5 @@
 dashboard_pl:
-  target: "{{ env_var('DBT_TARGET', 'dev') }}"
+  target: "{{ env_var('DBT_TARGET', 'prod') }}"
   outputs:
     dev:
       catalog: dev
