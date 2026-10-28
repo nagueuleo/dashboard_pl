@@ -1,14 +1,15 @@
 name: dbt CI
 
 on:
-  
+  push:
+    branches:
+      - main
   pull_request:
     types:
       - opened
       - synchronize
       - reopened
       - ready_for_review
-
   workflow_dispatch:
 
 jobs:
@@ -23,40 +24,38 @@ jobs:
       DBT_PROFILES_DIR: ./
 
     steps:
-      # etape 1: Checkout le depôt
       - name: Checkout code
         uses: actions/checkout@v4
-      # étape 2: version de python et son environnement
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
-      # étape 3: mettre à jour le pip de python et ses dépendances setuptools et wheel
-      - name: upgrade pip and  setuptools
+
+      - name: Upgrade pip, setuptools and wheel
         run: python -m pip install --upgrade pip setuptools wheel
-      # étape 4: installation des dépendances du projet
+
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-      # étape 5: installation des packages dbt
+        run: pip install -r requirements.txt
+
       - name: Install dbt packages
         run: dbt deps
-      # étape 6: Lint des modèles dbt
+
       - name: Lint dbt models
         run: sqlfluff lint models/
-      #étape 7: Vérification de la connexion à Databricks
+
       - name: Check Databricks connection
-        run: dbt debug 
-      #étape 8: Analyse du projet dbt
+        run: dbt debug
+
       - name: Parse dbt project
-        run: dbt parse 
-      #étape 9: Compilation des modèles dbt
+        run: dbt parse
+
       - name: Compile dbt models
-        run: dbt compile 
-      #étape 10: Construction des modèles dbt et exécution des tests
+        run: dbt compile
+
       - name: Build dbt models and run tests
-        run: dbt build 
-     #étape 11: Génération de la documentation dbt
+        run: dbt build
+
       - name: Generate dbt documentation
-        run: dbt docs generate 
+        run: dbt docs generate
