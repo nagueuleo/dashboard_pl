@@ -2,3 +2,4 @@ dbt-databricks
 sqlfluff
 sqlfluff-templater-dbt
 dbt-core
+dbt-duckdb
