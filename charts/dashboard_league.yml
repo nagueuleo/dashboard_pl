@@ -1,0 +1,26 @@
+title: "Statistiques des buts par équipe"
+
+source: analytics
+
+queries:
+  buts_par_equipe:
+    sql: |
+      SELECT
+          t.team AS team,
+          SUM(l.gf) AS total_buts
+      FROM {{ ref('int_pl_data') }} AS l
+      JOIN {{ ref('Dim_team') }} as t ON l.team = t.team
+      GROUP BY t.team
+      ORDER BY total_buts DESC
+
+charts:
+  buts_equipes:
+    title: "Nombre de buts marqués par équipe"
+    query: buts_par_equipe
+    type: bar
+    x: team
+    y: total_buts
+
+rows:
+  - cols:
+    - charts: [buts_equipes]
