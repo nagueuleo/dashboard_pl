@@ -1,0 +1,11 @@
+{
+  "servers": {
+    "dbt-charts": {
+      "command": "D:\\DOCUMENTS\\LEO\\Projet\\Data analyst\\premiere league analysis\\DATA\\dasboard_pl\\.venv\\Scripts\\dct.EXE",
+      "args": [
+        "mcp",
+        "serve"
+      ]
+    }
+  }
+}
