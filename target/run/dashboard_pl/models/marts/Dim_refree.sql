@@ -15,13 +15,14 @@
       
       
       as
-      with refree_data as ( 
-    select distinct
-        row_number() over(order by Referee) as refree_key,
-        Referee
+      with refree_data as (
+    select
+        referee,
+        row_number() over (order by referee) as refree_key
     from `dev`.`silver`.`int_pl_data`
-    group by Referee
-    order by Referee ASC
+    group by referee
+    order by referee asc
 )
+
 select * from refree_data
   
